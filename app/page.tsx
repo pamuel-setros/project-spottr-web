@@ -1,7 +1,7 @@
 // app/page.tsx
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
 export default function Home() {
@@ -92,7 +92,7 @@ export default function Home() {
       title: "2. Heuristic Matching Matrix",
       badge: "3x3 Core System",
       color: "text-[#238636] border-[#238636]/30 bg-[#238636]/10",
-      description: "Your brother's exact 3x3 training playbook matches performance capabilities across strict targets, choosing precise tactical slots rather than guessing output layouts.",
+      description: "Our proprietary 3x3 training playbook matches performance capabilities across strict targets, choosing precise tactical slots rather than guessing output layouts.",
     },
     {
       title: "3. Low-Latency Translation",
@@ -137,8 +137,8 @@ export default function Home() {
     <div className="flex flex-col min-h-screen justify-between bg-[#0d1117] text-[#c9d1d9]">
       
       {/* Navigation Layer */}
-      <header className="border-b border-[#30363d] bg-[#161b22]/80 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
+      <header className="border-b border-[#30363d] bg-[#161b22]/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-3.5">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
           <div className="flex items-center cursor-pointer select-none" onClick={() => setActiveTab('home')}>
             <Image 
               src="/spottr_text.png" 
@@ -226,7 +226,7 @@ export default function Home() {
                 <div className="md:col-span-5 bg-[#0d1117]/50 border-r border-[#30363d] p-6 flex flex-col justify-center space-y-4">
                   <div className="mb-2">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-[#8b949e]">The Engine Blueprint</h3>
-                    <p className="text-sm text-white font-bold">Why SPOTTR Isn't a Wrapper</p>
+                    <p className="text-sm text-white font-bold">Why SPOTTR Isn&apos;t a Wrapper</p>
                   </div>
                   {pipelineSteps.map((step, idx) => (
                     <button
@@ -489,20 +489,20 @@ except ExecutionFallback:
               Lock in your spot for the next generation of lifting intelligence. You will be notified as soon as system access is granted.
             </p>
 
-            <form onSubmit={handleWaitlistSubmit} className="max-w-md mx-auto p-1 bg-[#161b22] border border-[#30363d] rounded-lg flex items-center shadow-xl">
+            <form onSubmit={handleWaitlistSubmit} className="max-w-md mx-auto p-2 sm:p-1 bg-[#161b22] border border-[#30363d] rounded-lg flex flex-col sm:flex-row items-center shadow-xl gap-2 sm:gap-0">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status.type === 'loading'}
                 placeholder="Enter your email for early access"
-                className="bg-transparent text-white px-4 py-3 w-full focus:outline-none text-sm placeholder-[#8b949e] disabled:opacity-50"
+                className="bg-transparent text-white px-4 py-3 w-full focus:outline-none text-sm placeholder-[#8b949e] disabled:opacity-50 text-center sm:text-left"
                 required
               />
               <button
                 type="submit"
                 disabled={status.type === 'loading'}
-                className="bg-[#238636] hover:bg-[#2ea043] disabled:bg-[#238636]/50 whitespace-nowrap text-white font-medium text-sm px-6 py-2.5 rounded-md transition-colors mr-1 cursor-pointer"
+                className="bg-[#238636] hover:bg-[#2ea043] disabled:bg-[#238636]/50 whitespace-nowrap text-white font-medium text-sm px-6 py-3 sm:py-2.5 rounded-md transition-colors w-full sm:w-auto sm:mr-1 cursor-pointer"
               >
                 {status.type === 'loading' ? 'Securing...' : 'Secure Spot'}
               </button>
@@ -515,7 +515,7 @@ except ExecutionFallback:
             )}
 
             {/* LIVE SYSTEM SYNCED METRIC COUNTER DOCK */}
-            <div className="mt-10 flex items-center justify-center gap-3 text-sm text-[#8b949e] bg-[#161b22]/80 border border-[#30363d] w-fit mx-auto px-4 py-2.5 rounded-full shadow-md select-none">
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-[#8b949e] bg-[#161b22]/80 border border-[#30363d] max-w-full w-fit mx-auto px-4 py-2.5 rounded-full shadow-md select-none">
               <div className="flex -space-x-2">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#2ea043] to-[#238636] border-2 border-[#161b22]"></div>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#58a6ff] to-[#1f6feb] border-2 border-[#161b22]"></div>
