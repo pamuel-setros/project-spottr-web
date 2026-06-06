@@ -14,7 +14,8 @@ export async function GET() {
     }
 
     return NextResponse.json({ count: count || 0 }, { status: 200 });
-  } catch (err) {
+  } catch (error) {
+    console.error('GET /api/waitlist error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -37,7 +38,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ message: 'Successfully joined the waitlist!' }, { status: 200 });
-  } catch (err) {
+  } catch (error) {
+    console.error('POST /api/waitlist error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

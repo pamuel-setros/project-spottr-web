@@ -21,7 +21,10 @@ export default function Home() {
   const [activeStep, setActiveStep] = useState<number>(0);
 
   // Mock Security Diagnostics Feed State
-  const [systemLogs, setSystemLogs] = useState<string[]>([]);
+  const [systemLogs, setSystemLogs] = useState<string[]>([
+    "INIT SYSTEM // Zero-Trust Boundary Established",
+    "GATEWAY STATUS // Listening on encrypted local sub-net...",
+  ]);
 
   // BULLETPROOF FETCH: Isolated callback logic to break client caching buckets
   const refreshCount = useCallback(async () => {
@@ -47,23 +50,22 @@ export default function Home() {
 
   // Sync Event Hook 1: Fetch data the exact millisecond the core layout context hits memory
   useEffect(() => {
-    refreshCount();
+    void (async () => {
+      await refreshCount();
+    })();
   }, [refreshCount]);
 
   // Sync Event Hook 2: Force a hard refresh calculation whenever the active tab updates layout screens
   useEffect(() => {
     if (activeTab === 'waitlist' || activeTab === 'home') {
-      refreshCount();
+      void (async () => {
+        await refreshCount();
+      })();
     }
   }, [activeTab, refreshCount]);
 
   // SECPOSTURE DIAGNOSTICS: Automated loop feed simulator
   useEffect(() => {
-    setSystemLogs([
-      "INIT SYSTEM // Zero-Trust Boundary Established",
-      "GATEWAY STATUS // Listening on encrypted local sub-net...",
-    ]);
-
     const events = [
       "JWT AUTH ENGINE // Validation payload checked [STATUS: 200 OK]",
       "POSTGRES METRICS // Row Level Security enforced on public.waitlist",
