@@ -18,3 +18,69 @@
   --accent-green: #238636;
   --accent-green-hover: #2ea043;
 }
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 139, 235, 0.25) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(56, 139, 235, 0.25);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+}
+
+@layer utilities {
+  .hero-surface {
+    background-image: radial-gradient(circle at 16% 15%, rgba(46, 160, 67, 0.16) 0%, transparent 34%),
+      radial-gradient(circle at 94% 10%, rgba(88, 166, 255, 0.12) 0%, transparent 28%),
+      radial-gradient(circle at 20% 92%, rgba(210, 168, 255, 0.08) 0%, transparent 24%);
+  }
+
+  .premium-card {
+    background: rgba(13, 17, 23, 0.86);
+    border: 1px solid rgba(96, 130, 182, 0.16);
+    backdrop-filter: blur(18px);
+  }
+
+  .text-elite {
+    text-shadow: 0 0 28px rgba(88, 166, 255, 0.15);
+  }
+
+  .animate-fade {
+    animation: fadeIn 0.9s ease both;
+  }
+
+  .animate-float-slow {
+    animation: floatSlow 8s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatSlow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

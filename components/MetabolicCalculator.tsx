@@ -21,7 +21,7 @@ export default function MetabolicCalculator() {
   const carbs = Math.max(0, (targetCalories - (protein * 4 + fats * 9)) / 4);
 
   return (
-    <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-6 shadow-2xl w-full max-w-3xl mx-auto my-12 font-sans">
+    <div className="premium-card rounded-[2rem] p-6 shadow-[0_24px_80px_rgba(0,0,0,.35)] w-full max-w-3xl mx-auto my-12 font-sans animate-fade">
       <div className="mb-6 border-b border-[#30363d] pb-4">
         <h3 className="text-white text-xl font-bold tracking-tight mb-1">Metabolic Target Engine</h3>
         <p className="text-[#8b949e] text-xs font-mono uppercase tracking-widest">Katch-McArdle Analytical Model</p>

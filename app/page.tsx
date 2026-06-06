@@ -145,7 +145,12 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen justify-between bg-[#0d1117] text-[#c9d1d9]">
+    <div className="relative flex flex-col min-h-screen justify-between bg-[#0d1117] text-[#c9d1d9] overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-16 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-[#2ea043]/10 blur-3xl animate-float-slow"></div>
+        <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-[#58a6ff]/10 blur-3xl"></div>
+        <div className="absolute bottom-8 left-16 h-64 w-64 rounded-full bg-[#d2a8ff]/8 blur-3xl"></div>
+      </div>
       
       {/* Navigation Layer */}
       <header className="border-b border-[#30363d] bg-[#161b22]/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-3.5">
@@ -195,7 +200,7 @@ export default function Home() {
           <button 
             type="button"
             onClick={() => setActiveTab('waitlist')}
-            className="hidden sm:block bg-[#238636] hover:bg-[#2ea043] text-white text-sm font-medium px-4 py-2 rounded-md transition-colors cursor-pointer"
+            className="hidden sm:block rounded-full bg-gradient-to-r from-[#238636] to-[#58a6ff] px-4 py-2 text-sm font-medium text-white shadow-[0_10px_40px_rgba(46,160,67,0.18)] transition-transform duration-300 hover:-translate-y-0.5 cursor-pointer"
           >
             Join Waitlist
           </button>
@@ -208,12 +213,12 @@ export default function Home() {
         {/* VIEW 1: HOME PLATFORM OVERVIEW */}
         {activeTab === 'home' && (
           <>
-            <section className="max-w-4xl mx-auto text-center px-6 pt-24 pb-16">
+            <section className="relative z-10 max-w-4xl mx-auto text-center px-6 pt-24 pb-16 hero-surface animate-fade">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161b22] border border-[#30363d] text-xs font-medium text-[#8b949e] mb-6">
                 <span className="w-2 h-2 rounded-full bg-[#238636] animate-pulse"></span>
                 Hybrid-AI Expert System Engine v3
               </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight text-elite">
                 The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ea043] to-[#58a6ff]">J.A.R.V.I.S.</span> for lifting.
               </h1>
               <p className="text-lg md:text-xl text-[#8b949e] max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -224,7 +229,7 @@ export default function Home() {
                 <button 
                   type="button"
                   onClick={() => setActiveTab('waitlist')}
-                  className="bg-[#238636] hover:bg-[#2ea043] text-white font-medium text-base px-8 py-3.5 rounded-md transition-colors shadow-lg cursor-pointer inline-flex items-center gap-2"
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#238636] to-[#58a6ff] px-8 py-3.5 text-base font-semibold text-white shadow-[0_20px_70px_rgba(46,160,67,0.23)] transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_25px_90px_rgba(46,160,67,0.28)]"
                 >
                   Join the Waitlist <span className="text-lg">→</span>
                 </button>
@@ -232,8 +237,8 @@ export default function Home() {
             </section>
 
             {/* Blueprint Grid Layout */}
-            <section className="max-w-5xl mx-auto px-6 pt-12 pb-8">
-              <div className="bg-[#161b22] border border-[#30363d] rounded-xl overflow-hidden shadow-2xl grid md:grid-cols-12">
+            <section className="max-w-5xl mx-auto px-6 pt-12 pb-8 animate-fade">
+              <div className="premium-card rounded-[2rem] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,.32)] grid md:grid-cols-12">
                 <div className="md:col-span-5 bg-[#0d1117]/50 border-r border-[#30363d] p-6 flex flex-col justify-center space-y-4">
                   <div className="mb-2">
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-[#8b949e]">The Engine Blueprint</h3>
@@ -383,7 +388,7 @@ except ExecutionFallback:
 
         {/* VIEW 3: EXTERNAL FUNNEL ECOSYSTEM LINKS */}
         {activeTab === 'links' && (
-          <section className="max-w-3xl mx-auto px-6 py-20 text-center">
+          <section className="max-w-3xl mx-auto px-6 py-20 text-center animate-fade">
             <h2 className="text-xs font-mono tracking-widest text-[#58a6ff] uppercase mb-2">Central Operations</h2>
             <h3 className="text-2xl font-bold text-white mb-10">Access the SPOTTR Hub Ecosystem</h3>
             
@@ -448,7 +453,7 @@ except ExecutionFallback:
 
         {/* VIEW 4: SYSTEM DOCUMENT SPEC FILE CARDS */}
         {activeTab === 'documents' && (
-          <section className="max-w-3xl mx-auto px-6 py-20 text-center">
+          <section className="max-w-3xl mx-auto px-6 py-20 text-center animate-fade">
             <h2 className="text-xs font-mono tracking-widest text-[#d2a8ff] uppercase mb-2">Technical Specs</h2>
             <h3 className="text-2xl font-bold text-white mb-10">System Documentation</h3>
             
@@ -493,7 +498,7 @@ except ExecutionFallback:
 
         {/* VIEW 5: WAITLIST FUNNEL */}
         {activeTab === 'waitlist' && (
-          <section className="max-w-3xl mx-auto px-6 py-24 text-center">
+          <section className="max-w-3xl mx-auto px-6 py-24 text-center animate-fade">
             <h2 className="text-xs font-mono tracking-widest text-[#2ea043] uppercase mb-2">Early Access</h2>
             <h3 className="text-3xl font-bold text-white mb-6">Join the Deployment Queue</h3>
             <p className="text-sm text-[#8b949e] max-w-xl mx-auto mb-10 leading-relaxed">
