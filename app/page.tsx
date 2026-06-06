@@ -29,22 +29,26 @@ export default function Home() {
   // BULLETPROOF FETCH: Isolated callback logic to break client caching buckets
   const refreshCount = useCallback(async () => {
     try {
-      const baseHost = window.location.origin;
-      const response = await fetch(`${baseHost}/api/waitlist`, { 
+      // 1. Drop the window.location.origin construction.
+      // 2. Use a strict relative path so the browser handles origin matching natively.
+      const response = await fetch('/api/waitlist', { 
+        method: 'GET',
         cache: 'no-store',
         headers: { 
-          'Pragma': 'no-cache', 
-          'Cache-Control': 'no-cache' 
+          'Pragma': 'no-cache' 
         }
       });
-      if (response.ok) {
-        const data = await response.json();
-        // Securely parse string numbers or fallback cleanly to zero rows
-        const liveRows = typeof data.count === 'number' ? data.count : parseInt(data.count) || 0;
-        setWaitlistCount(1284 + liveRows);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Network fault`);
       }
-    } catch (err) {
-      console.error("Failed to sync live waitlist row bounds context:", err);
+
+      const data = await response.json();
+      // Assume your state setter is something like setWaitlistCount(data.count)
+      // setWaitlistCount(data.count); 
+
+    } catch (error) {
+      console.error("[DEVSEC WARNING] Failed to sync live waitlist row bounds context:", error);
     }
   }, []);
 

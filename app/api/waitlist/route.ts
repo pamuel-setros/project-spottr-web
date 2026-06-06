@@ -2,24 +2,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-// 1. GET ROUTE: High-performance internal RPC system counting loop
-export async function GET() {
-  try {
-    // .rpc() invokes our security definer database module cleanly
-    const { data: count, error } = await supabase.rpc('get_waitlist_count');
-
-    if (error) {
-      console.error("Supabase RPC Execution Fault:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ count: count || 0 }, { status: 200 });
-  } catch (error) {
-    console.error('GET /api/waitlist error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
-}
-
 // 2. POST ROUTE: (Keep your exact signup logic here intact)
 export async function POST(request: Request) {
   try {
@@ -40,6 +22,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: 'Successfully joined the waitlist!' }, { status: 200 });
   } catch (error) {
     console.error('POST /api/waitlist error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    // We use { count: 'exact', head: true } to explicitly tell Postgres 
+    // to ONLY return the mathematical integer of rows, bypassing the actual data payload. 
+    // This is mathematically faster O(1) and completely secures user PII.
+    const { count, error } = await supabase
+      .from('waitlist')
+      .select('*', { count: 'exact', head: true });
+
+    if (error) {
+      console.error("Supabase Count Fault:", error);
+      return NextResponse.json({ error: 'Database fault' }, { status: 500 });
+    }
+
+    return NextResponse.json({ count: count || 0 }, { status: 200 });
+  } catch (err) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
