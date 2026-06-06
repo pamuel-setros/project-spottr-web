@@ -9,24 +9,60 @@
             margin: 0;
             padding: 0;
             font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #000000;
-            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 70%);
+            background-color: #050505;
+            background-image: 
+                radial-gradient(circle at 50% -20%, rgba(34, 197, 94, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 50% 120%, rgba(34, 197, 94, 0.05) 0%, transparent 50%);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             color: #ffffff;
+            overflow: hidden;
         }
         .container {
-            background: #111111;
+            background: rgba(17, 17, 17, 0.6);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             padding: 48px 40px;
             border-radius: 24px;
-            border: 1px solid #222222;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(34, 197, 94, 0.05) inset;
             text-align: center;
             max-width: 420px;
             width: 90%;
             box-sizing: border-box;
+            opacity: 0;
+            animation: containerDragIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @keyframes containerDragIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes itemDragIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .container > * {
+            opacity: 0;
+            animation: itemDragIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .logo { animation-delay: 0.1s; }
+        .icon-wrapper { animation-delay: 0.2s; }
+        h1 { animation-delay: 0.3s; }
+        p { animation-delay: 0.4s; }
+        .btn { animation-delay: 0.5s; }
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: -0.05em;
+            color: #ffffff;
+            margin: 0 0 32px;
+            text-transform: uppercase;
+        }
+        .logo span {
+            color: #22c55e;
         }
         .icon-wrapper {
             background-color: rgba(34, 197, 94, 0.1);
@@ -61,7 +97,7 @@
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            background-color: #ffffff;
+            background-color: #22c55e;
             color: #000000;
             text-decoration: none;
             padding: 14px 28px;
@@ -71,22 +107,18 @@
             transition: all 0.2s ease;
             width: 100%;
             box-sizing: border-box;
+            box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
         }
         .btn:hover {
-            background-color: #e5e5e5;
-            transform: translateY(-1px);
-        }
-        .brand {
-            margin-top: 32px;
-            font-size: 14px;
-            color: #666666;
-            font-weight: 700;
-            letter-spacing: 0.1em;
+            background-color: #1ea34d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="logo">SP<span>O</span>TTR</div>
         <div class="icon-wrapper">
             <!-- Checkmark SVG -->
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -96,7 +128,6 @@
         <h1>Email Confirmed</h1>
         <p>Your email has been successfully verified. You can now head back to the SPOTTR app and sign in.</p>
         <a href="/" class="btn">Return to Homepage</a>
-        <div class="brand">SPOTTR</div>
     </div>
 </body>
 </html>
