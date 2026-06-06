@@ -28,19 +28,17 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    // We use { count: 'exact', head: true } to explicitly tell Postgres 
-    // to ONLY return the mathematical integer of rows, bypassing the actual data payload. 
-    // This is mathematically faster O(1) and completely secures user PII.
-    const { count, error } = await supabase
-      .from('waitlist')
-      .select('*', { count: 'exact', head: true });
+    // Use the safe count-only RPC created in Supabase.
+    // This avoids row-level security issues and returns just the total count.
+    const { data, error } = await supabase.rpc('waitlist_total');
 
     if (error) {
-      console.error("Supabase Count Fault:", error);
+      console.error('Supabase Count Fault:', error);
       return NextResponse.json({ error: 'Database fault' }, { status: 500 });
     }
 
-    return NextResponse.json({ count: count || 0 }, { status: 200 });
+    const count = typeof data === 'number' ? data : Number(data ?? 0);
+    return NextResponse.json({ count }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
