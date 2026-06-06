@@ -44,8 +44,11 @@ export default function Home() {
       }
 
       const data = await response.json();
-      // Assume your state setter is something like setWaitlistCount(data.count)
-      // setWaitlistCount(data.count); 
+      if (typeof data.count === 'number') {
+        setWaitlistCount(1284 + data.count);
+      } else {
+        console.warn('Unexpected waitlist response:', data);
+      }
 
     } catch (error) {
       console.error("[DEVSEC WARNING] Failed to sync live waitlist row bounds context:", error);
