@@ -1,62 +1,7 @@
-// postcss.config.mjs
-```mjs
-const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
-
-export default config;
-```
-
-// next-env.d.ts
-```ts
-/// <reference types="next" />
-/// <reference types="next/image-types/global" />
-import "./.next/dev/types/routes.d.ts";
-
-// NOTE: This file should not be edited
-// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
-```
-
-// README.md
-```md
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+// .env.local
+```local
+NEXT_PUBLIC_SUPABASE_URL=https://mdauolfhlohdynqrdlzl.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_YmF3K9PE_L8UxpRDJxPtKA_9vBZNGZG
 ```
 
 // .gitignore
@@ -104,6 +49,63 @@ yarn-error.log*
 next-env.d.ts
 ```
 
+// AGENTS.md
+```md
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+```
+
+// CLAUDE.md
+```md
+@AGENTS.md
+```
+
+// eslint.config.mjs
+```mjs
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+```
+
+// next-env.d.ts
+```ts
+/// <reference types="next" />
+/// <reference types="next/image-types/global" />
+import "./.next/dev/types/routes.d.ts";
+
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
+```
+
+// next.config.ts
+```ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  allowedDevOrigins: ['192.168.68.59'],
+};
+
+export default nextConfig;
+```
+
 // package-lock.json
 ```json
 {
@@ -117,6 +119,7 @@ next-env.d.ts
       "version": "0.1.0",
       "dependencies": {
         "@supabase/supabase-js": "^2.106.1",
+        "@vercel/analytics": "^2.0.1",
         "next": "16.2.6",
         "react": "19.2.4",
         "react-dom": "19.2.4"
@@ -2497,6 +2500,48 @@ next-env.d.ts
       "os": [
         "win32"
       ]
+    },
+    "node_modules/@vercel/analytics": {
+      "version": "2.0.1",
+      "resolved": "https://registry.npmjs.org/@vercel/analytics/-/analytics-2.0.1.tgz",
+      "integrity": "sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==",
+      "license": "MIT",
+      "peerDependencies": {
+        "@remix-run/react": "^2",
+        "@sveltejs/kit": "^1 || ^2",
+        "next": ">= 13",
+        "nuxt": ">= 3",
+        "react": "^18 || ^19 || ^19.0.0-rc",
+        "svelte": ">= 4",
+        "vue": "^3",
+        "vue-router": "^4"
+      },
+      "peerDependenciesMeta": {
+        "@remix-run/react": {
+          "optional": true
+        },
+        "@sveltejs/kit": {
+          "optional": true
+        },
+        "next": {
+          "optional": true
+        },
+        "nuxt": {
+          "optional": true
+        },
+        "react": {
+          "optional": true
+        },
+        "svelte": {
+          "optional": true
+        },
+        "vue": {
+          "optional": true
+        },
+        "vue-router": {
+          "optional": true
+        }
+      }
     },
     "node_modules/acorn": {
       "version": "8.16.0",
@@ -6968,6 +7013,7 @@ next-env.d.ts
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.1",
+    "@vercel/analytics": "^2.0.1",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -6983,6 +7029,57 @@ next-env.d.ts
     "typescript": "^5"
   }
 }
+```
+
+// postcss.config.mjs
+```mjs
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+```
+
+// README.md
+```md
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 ```
 
 // tsconfig.json
@@ -7023,79 +7120,54 @@ next-env.d.ts
 }
 ```
 
-// AGENTS.md
-```md
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+// app\globals.css
+```css
+@import "tailwindcss";
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+@layer base {
+  body {
+    background-color: #0d1117;
+    color: #c9d1d9;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+}
+
+/* Custom utility colors matching the Spottr Mobile App palette */
+:root {
+  --bg-main: #0d1117;
+  --bg-card: #161b22;
+  --border-subtle: #30363d;
+  --text-main: #c9d1d9;
+  --text-muted: #8b949e;
+  --accent-green: #238636;
+  --accent-green-hover: #2ea043;
+}
 ```
 
-// eslint.config.mjs
-```mjs
-import { defineConfig, globalIgnores } from "eslint/config";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
-
-const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-  ]),
-]);
-
-export default eslintConfig;
-```
-
-// CLAUDE.md
-```md
-@AGENTS.md
-```
-
-// next.config.ts
-```ts
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.68.59'],
-};
-
-export default nextConfig;
-```
-
-// app/layout.tsx
+// app\layout.tsx
 ```tsx
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SPOTTR | The J.A.R.V.I.S. for Lifting",
-  description: "A deterministic, science-backed AI fitness coach powered by hybrid expert systems. Real-time adaptations for your equipment, injuries, and performance.",
+  description: "A deterministic, science-backed AI fitness coach powered by hybrid expert systems.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-[#0d1117] text-[#c9d1d9] antialiased min-h-screen selection:bg-[#238636] selection:text-white overflow-x-hidden">
         {children}
+        <Analytics />
       </body>
     </html>
   );
 }
 ```
 
-// app/page.tsx
+// app\page.tsx
 ```tsx
 // app/page.tsx
 'use client';
@@ -7120,49 +7192,58 @@ export default function Home() {
   const [activeStep, setActiveStep] = useState<number>(0);
 
   // Mock Security Diagnostics Feed State
-  const [systemLogs, setSystemLogs] = useState<string[]>([]);
+  const [systemLogs, setSystemLogs] = useState<string[]>([
+    "INIT SYSTEM // Zero-Trust Boundary Established",
+    "GATEWAY STATUS // Listening on encrypted local sub-net...",
+  ]);
 
   // BULLETPROOF FETCH: Isolated callback logic to break client caching buckets
   const refreshCount = useCallback(async () => {
     try {
-      const baseHost = window.location.origin;
-      const response = await fetch(`${baseHost}/api/waitlist`, { 
+      // 1. Drop the window.location.origin construction.
+      // 2. Use a strict relative path so the browser handles origin matching natively.
+      const response = await fetch('/api/waitlist', { 
+        method: 'GET',
         cache: 'no-store',
         headers: { 
-          'Pragma': 'no-cache', 
-          'Cache-Control': 'no-cache' 
+          'Pragma': 'no-cache' 
         }
       });
-      if (response.ok) {
-        const data = await response.json();
-        // Securely parse string numbers or fallback cleanly to zero rows
-        const liveRows = typeof data.count === 'number' ? data.count : parseInt(data.count) || 0;
-        setWaitlistCount(1284 + liveRows);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: Network fault`);
       }
-    } catch (err) {
-      console.error("Failed to sync live waitlist row bounds context:", err);
+
+      const data = await response.json();
+      if (typeof data.count === 'number') {
+        setWaitlistCount(1284 + data.count);
+      } else {
+        console.warn('Unexpected waitlist response:', data);
+      }
+
+    } catch (error) {
+      console.error("[DEVSEC WARNING] Failed to sync live waitlist row bounds context:", error);
     }
   }, []);
 
   // Sync Event Hook 1: Fetch data the exact millisecond the core layout context hits memory
   useEffect(() => {
-    refreshCount();
+    void (async () => {
+      await refreshCount();
+    })();
   }, [refreshCount]);
 
   // Sync Event Hook 2: Force a hard refresh calculation whenever the active tab updates layout screens
   useEffect(() => {
     if (activeTab === 'waitlist' || activeTab === 'home') {
-      refreshCount();
+      void (async () => {
+        await refreshCount();
+      })();
     }
   }, [activeTab, refreshCount]);
 
   // SECPOSTURE DIAGNOSTICS: Automated loop feed simulator
   useEffect(() => {
-    setSystemLogs([
-      "INIT SYSTEM // Zero-Trust Boundary Established",
-      "GATEWAY STATUS // Listening on encrypted local sub-net...",
-    ]);
-
     const events = [
       "JWT AUTH ENGINE // Validation payload checked [STATUS: 200 OK]",
       "POSTGRES METRICS // Row Level Security enforced on public.waitlist",
@@ -7642,52 +7723,11 @@ except ExecutionFallback:
 }
 ```
 
-// app/globals.css
-```css
-@import "tailwindcss";
-
-@layer base {
-  body {
-    background-color: #0d1117;
-    color: #c9d1d9;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  }
-}
-
-/* Custom utility colors matching the Spottr Mobile App palette */
-:root {
-  --bg-main: #0d1117;
-  --bg-card: #161b22;
-  --border-subtle: #30363d;
-  --text-main: #c9d1d9;
-  --text-muted: #8b949e;
-  --accent-green: #238636;
-  --accent-green-hover: #2ea043;
-}
-```
-
-// app/api/waitlist/route.ts
+// app\api\waitlist\route.ts
 ```ts
 // app/api/waitlist/route.ts
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-
-// 1. GET ROUTE: High-performance internal RPC system counting loop
-export async function GET() {
-  try {
-    // .rpc() invokes our security definer database module cleanly
-    const { data: count, error } = await supabase.rpc('get_waitlist_count');
-
-    if (error) {
-      console.error("Supabase RPC Execution Fault:", error.message);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ count: count || 0 }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
-}
 
 // 2. POST ROUTE: (Keep your exact signup logic here intact)
 export async function POST(request: Request) {
@@ -7707,13 +7747,129 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ message: 'Successfully joined the waitlist!' }, { status: 200 });
+  } catch (error) {
+    console.error('POST /api/waitlist error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    // We use { count: 'exact', head: true } to explicitly tell Postgres 
+    // to ONLY return the mathematical integer of rows, bypassing the actual data payload. 
+    // This is mathematically faster O(1) and completely secures user PII.
+    const { count, error } = await supabase
+      .from('waitlist')
+      .select('*', { count: 'exact', head: true });
+
+    if (error) {
+      console.error("Supabase Count Fault:", error);
+      return NextResponse.json({ error: 'Database fault' }, { status: 500 });
+    }
+
+    return NextResponse.json({ count: count || 0 }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 ```
 
-// lib/supabase.ts
+// components\MetabolicCalculator.tsx
+```tsx
+'use client';
+
+import React, { useState } from 'react';
+
+export default function MetabolicCalculator() {
+  const [weightLbs, setWeightLbs] = useState<number>(180);
+  const [bodyFat, setBodyFat] = useState<number>(15);
+  const [activity, setActivity] = useState<number>(1.55);
+  const [goal, setGoal] = useState<number>(1); // 1 = Maintain, 1.1 = Bulk, 0.8 = Cut
+
+  // The Katch-McArdle Math
+  const weightKg = weightLbs / 2.20462;
+  const lbm = weightKg * (1 - bodyFat / 100);
+  const bmr = 370 + 21.6 * lbm;
+  const tdee = bmr * activity;
+  const targetCalories = tdee * goal;
+
+  // Base AI Macro Heuristics
+  const protein = weightLbs * 1.1; // 1.1g per lb
+  const fats = weightLbs * 0.4;    // 0.4g per lb
+  const carbs = Math.max(0, (targetCalories - (protein * 4 + fats * 9)) / 4);
+
+  return (
+    <div className="bg-[#161b22] border border-[#30363d] rounded-xl p-6 shadow-2xl w-full max-w-3xl mx-auto my-12 font-sans">
+      <div className="mb-6 border-b border-[#30363d] pb-4">
+        <h3 className="text-white text-xl font-bold tracking-tight mb-1">Metabolic Target Engine</h3>
+        <p className="text-[#8b949e] text-xs font-mono uppercase tracking-widest">Katch-McArdle Analytical Model</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        <div className="space-y-5">
+          <div>
+            <label className="text-sm font-semibold text-white block mb-2">Weight: {weightLbs} lbs</label>
+            <input type="range" min="100" max="350" value={weightLbs} onChange={(e) => setWeightLbs(Number(e.target.value))} className="w-full accent-[#238636]" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-white block mb-2">Body Fat: {bodyFat}%</label>
+            <input type="range" min="5" max="40" value={bodyFat} onChange={(e) => setBodyFat(Number(e.target.value))} className="w-full accent-[#238636]" />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-white block mb-2">Activity Multiplier</label>
+            <select value={activity} onChange={(e) => setActivity(Number(e.target.value))} className="w-full bg-[#0d1117] border border-[#30363d] text-sm text-[#c9d1d9] p-2.5 rounded-md focus:outline-none focus:border-[#58a6ff]">
+              <option value={1.2}>Sedentary (1.2)</option>
+              <option value={1.375}>Lightly Active (1.375)</option>
+              <option value={1.55}>Moderately Active (1.55)</option>
+              <option value={1.725}>Very Active (1.725)</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-white block mb-2">Phase Goal</label>
+            <select value={goal} onChange={(e) => setGoal(Number(e.target.value))} className="w-full bg-[#0d1117] border border-[#30363d] text-sm text-[#c9d1d9] p-2.5 rounded-md focus:outline-none focus:border-[#238636]">
+              <option value={0.8}>Aggressive Cut (80%)</option>
+              <option value={0.9}>Mild Cut (90%)</option>
+              <option value={1.0}>Maintenance (100%)</option>
+              <option value={1.1}>Lean Bulk (110%)</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-6 flex flex-col justify-center space-y-4">
+          <div className="flex justify-between items-center border-b border-[#30363d] pb-2">
+            <span className="text-xs font-mono text-[#8b949e]">BMR (Basal Rate)</span>
+            <span className="font-bold text-white">{Math.round(bmr)} kcal</span>
+          </div>
+          <div className="flex justify-between items-center border-b border-[#30363d] pb-2">
+            <span className="text-xs font-mono text-[#8b949e]">TDEE (Expenditure)</span>
+            <span className="font-bold text-white">{Math.round(tdee)} kcal</span>
+          </div>
+          <div className="flex justify-between items-center pt-2">
+            <span className="text-sm font-mono text-[#238636] font-bold">TARGET INTAKE</span>
+            <span className="text-2xl font-black text-white">{Math.round(targetCalories)} <span className="text-sm text-[#8b949e]">kcal</span></span>
+          </div>
+          <div className="grid grid-cols-3 gap-2 pt-4">
+            <div className="bg-[#161b22] border border-[#30363d] rounded p-2 text-center">
+              <span className="block text-[10px] uppercase font-bold text-[#58a6ff]">Protein</span>
+              <span className="block font-mono text-sm text-white">{Math.round(protein)}g</span>
+            </div>
+            <div className="bg-[#161b22] border border-[#30363d] rounded p-2 text-center">
+              <span className="block text-[10px] uppercase font-bold text-[#d2a8ff]">Carbs</span>
+              <span className="block font-mono text-sm text-white">{Math.round(carbs)}g</span>
+            </div>
+            <div className="bg-[#161b22] border border-[#30363d] rounded p-2 text-center">
+              <span className="block text-[10px] uppercase font-bold text-[#e3b341]">Fats</span>
+              <span className="block font-mono text-sm text-white">{Math.round(fats)}g</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+// lib\supabase.ts
 ```ts
 // lib/supabase.ts
 import { createClient } from '@supabase/supabase-js';

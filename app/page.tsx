@@ -14,8 +14,10 @@ export default function Home() {
     message: ''
   });
 
-  // Waitlist Counter State (Baseline 1284 offset)
-  const [waitlistCount, setWaitlistCount] = useState<number>(1284);
+  const WAITLIST_SEED = 1284;
+
+  // Waitlist Counter State (seed + live Supabase count)
+  const [waitlistCount, setWaitlistCount] = useState<number>(WAITLIST_SEED);
 
   // Interactive Graphic Blueprint State
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -45,7 +47,7 @@ export default function Home() {
 
       const data = await response.json();
       if (typeof data.count === 'number') {
-        setWaitlistCount(1284 + data.count);
+        setWaitlistCount(WAITLIST_SEED + data.count);
       } else {
         console.warn('Unexpected waitlist response:', data);
       }
