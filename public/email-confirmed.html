@@ -8,75 +8,95 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f9fafb;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #000000 70%);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: #111827;
+            color: #ffffff;
         }
         .container {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            background: #111111;
+            padding: 48px 40px;
+            border-radius: 24px;
+            border: 1px solid #222222;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             text-align: center;
-            max-width: 400px;
+            max-width: 420px;
             width: 90%;
+            box-sizing: border-box;
         }
-        .icon {
-            background-color: #d1fae5;
-            color: #10b981;
-            width: 64px;
-            height: 64px;
+        .icon-wrapper {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 24px;
+            margin: 0 auto 32px;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
         }
-        .icon svg {
-            width: 32px;
-            height: 32px;
+        .icon-wrapper svg {
+            width: 40px;
+            height: 40px;
         }
         h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin: 0 0 16px;
+            color: #ffffff;
         }
         p {
             font-size: 16px;
-            color: #4b5563;
+            color: #a3a3a3;
             line-height: 1.6;
-            margin-bottom: 32px;
+            margin: 0 0 32px;
         }
         .btn {
-            display: inline-block;
-            background-color: #111827;
-            color: #ffffff;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #ffffff;
+            color: #000000;
             text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: background-color 0.2s ease;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box;
         }
         .btn:hover {
-            background-color: #374151;
+            background-color: #e5e5e5;
+            transform: translateY(-1px);
+        }
+        .brand {
+            margin-top: 32px;
+            font-size: 14px;
+            color: #666666;
+            font-weight: 700;
+            letter-spacing: 0.1em;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="icon">
+        <div class="icon-wrapper">
             <!-- Checkmark SVG -->
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
             </svg>
         </div>
-        <h1>Email Confirmed!</h1>
-        <p>Email confirmed — head back to the SPOTTR app and sign in.</p>
+        <h1>Email Confirmed</h1>
+        <p>Your email has been successfully verified. You can now head back to the SPOTTR app and sign in.</p>
         <a href="/" class="btn">Return to Homepage</a>
+        <div class="brand">SPOTTR</div>
     </div>
 </body>
 </html>
