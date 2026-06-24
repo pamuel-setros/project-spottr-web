@@ -4,124 +4,120 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 
-export default function Home() {
-  const [activeTab, setActiveTab] = useState<'home' | 'about' | 'links' | 'documents' | 'waitlist'>('home');
+type Tab = 'home' | 'about' | 'community' | 'waitlist';
 
-  // Waitlist Form State
+export default function Home() {
+  const [activeTab, setActiveTab] = useState<Tab>('home');
+
+  // Waitlist form state
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'success' | 'error'; message: string }>({
     type: 'idle',
-    message: ''
+    message: '',
   });
 
-  const WAITLIST_SEED = 1284;
-
-  // Waitlist Counter State (seed + live Supabase count)
+  // Live waitlist counter — honest real Supabase count (no inflation).
+  const WAITLIST_SEED = 0;
+  // Only show the number once it's actually impressive; below this we lean on
+  // "founding access" exclusivity instead of a weak count.
+  const WAITLIST_THRESHOLD = 250;
   const [waitlistCount, setWaitlistCount] = useState<number>(WAITLIST_SEED);
 
-  // Interactive Graphic Blueprint State
+  // "How it works" interactive stepper
   const [activeStep, setActiveStep] = useState<number>(0);
 
-  // Mock Security Diagnostics Feed State
-  const [systemLogs, setSystemLogs] = useState<string[]>([
-    "INIT SYSTEM // Zero-Trust Boundary Established",
-    "GATEWAY STATUS // Listening on encrypted local sub-net...",
-  ]);
-
-  // BULLETPROOF FETCH: Isolated callback logic to break client caching buckets
   const refreshCount = useCallback(async () => {
     try {
-      // 1. Drop the window.location.origin construction.
-      // 2. Use a strict relative path so the browser handles origin matching natively.
-      const response = await fetch('/api/waitlist', { 
+      const response = await fetch('/api/waitlist', {
         method: 'GET',
         cache: 'no-store',
-        headers: { 
-          'Pragma': 'no-cache' 
-        }
+        headers: { Pragma: 'no-cache' },
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: Network fault`);
-      }
-
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (typeof data.count === 'number') {
         setWaitlistCount(WAITLIST_SEED + data.count);
-      } else {
-        console.warn('Unexpected waitlist response:', data);
       }
-
     } catch (error) {
-      console.error("[DEVSEC WARNING] Failed to sync live waitlist row bounds context:", error);
+      console.error('Failed to refresh waitlist count:', error);
     }
   }, []);
 
-  // Sync Event Hook 1: Fetch data the exact millisecond the core layout context hits memory
   useEffect(() => {
-    void (async () => {
-      await refreshCount();
-    })();
+    void refreshCount();
   }, [refreshCount]);
 
-  // Sync Event Hook 2: Force a hard refresh calculation whenever the active tab updates layout screens
   useEffect(() => {
     if (activeTab === 'waitlist' || activeTab === 'home') {
-      void (async () => {
-        await refreshCount();
-      })();
+      void refreshCount();
     }
   }, [activeTab, refreshCount]);
 
-  // SECPOSTURE DIAGNOSTICS: Automated loop feed simulator
+  const steps = [
+    {
+      tag: 'Built for your gym',
+      accent: 'spottr' as const,
+      title: 'Tell it your reality',
+      body: 'Your goal, your experience, the exact equipment in front of you, and any injuries. SPOTTR builds around what is actually true for you today — not a generic template someone else wrote.',
+      points: ['Equipment-aware', 'Injury-aware', 'Goal-specific'],
+    },
+    {
+      tag: 'Science-backed',
+      accent: 'ice' as const,
+      title: 'Get a session that fits',
+      body: 'A structured workout assembled from real strength science — never random, never made up. It respects how much time you have and trains around your limits automatically.',
+      points: ['Deterministic engine', 'Fits your time', 'No guesswork'],
+    },
+    {
+      tag: 'During & after',
+      accent: 'spottr' as const,
+      title: 'Lift with a coach in your ear',
+      body: 'Form and tempo cues the moment you need them, then a clear post-workout breakdown: what you did, what to fix, and exactly what comes next.',
+      points: ['Real-time cues', 'Post-workout analysis', 'Always progressing'],
+    },
+  ];
+
+  const accentChip = (a: 'spottr' | 'ice') =>
+    a === 'spottr'
+      ? 'text-spottr border-spottr/30 bg-spottr/10'
+      : 'text-ice border-ice/30 bg-ice/10';
+
+  // "How it works" carousel: auto-advance every 5s, resets whenever the step changes
+  // (so manual nav doesn't fight the timer).
   useEffect(() => {
-    const events = [
-      "JWT AUTH ENGINE // Validation payload checked [STATUS: 200 OK]",
-      "POSTGRES METRICS // Row Level Security enforced on public.waitlist",
-      "XSS SANITIZER // Input strings scrubbed for injection protection",
-      "API METRIC // Groq LPU response clocked at 14ms synchronous cue latency",
-      "BACKOFF RETRY ENGINE // Running exponential loop monitors... 0 errors logged"
-    ];
-    
-    const interval = setInterval(() => {
-      const randomEvent = events[Math.floor(Math.random() * events.length)];
-      const timestamp = new Date().toLocaleTimeString();
-      setSystemLogs(prev => [`[${timestamp}] ${randomEvent}`, ...prev.slice(0, 3)]);
-    }, 4500);
+    const id = setInterval(() => setActiveStep((p) => (p + 1) % steps.length), 5000);
+    return () => clearInterval(id);
+  }, [activeStep, steps.length]);
 
-    return () => clearInterval(interval);
-  }, []);
-
-  const pipelineSteps = [
+  const differentiators = [
     {
-      title: "1. Ground Truth Filtering",
-      badge: "Pandas DataFrame",
-      color: "text-[#58a6ff] border-[#58a6ff]/30 bg-[#58a6ff]/10",
-      description: "Inputs hit an in-memory Pandas array immediately. Core sports science mechanics, equipment fallbacks, and injury bans are locked down strictly before an AI engine can alter data.",
+      title: "Won't invent equipment you don't have",
+      body: 'If it is not in your gym, it is not in your workout. Every movement is checked against what you actually have access to.',
     },
     {
-      title: "2. Heuristic Matching Matrix",
-      badge: "3x3 Core System",
-      color: "text-[#238636] border-[#238636]/30 bg-[#238636]/10",
-      description: "Our proprietary 3x3 training playbook matches performance capabilities across strict targets, choosing precise tactical slots rather than guessing output layouts.",
+      title: "Won't push you through injuries",
+      body: 'Tell it where you are hurt and it trains around it — swapping or skipping anything that loads the wrong thing.',
     },
     {
-      title: "3. Low-Latency Translation",
-      badge: "Dual-LLM Interface",
-      color: "text-[#ff7b72] border-[#ff7b72]/30 bg-[#ff7b72]/10",
-      description: "Groq routes instantaneous mechanical set tips seamlessly, while Gemini performs asynchronous workout analytics and macro safety validations as a secure fallback system.",
-    }
+      title: 'Re-adapts every single session',
+      body: 'It learns from how the last workout went and adjusts the next one. Your plan is never frozen.',
+    },
+  ];
+
+  const shots = [
+    { src: '/web/shot-coach.jpg', title: 'Trains around your injuries', body: 'Every session is built for your equipment and auto-adjusts around anything you can’t load that day — no risky swaps.' },
+    { src: '/web/shot-debrief.jpg', title: 'A real post-workout debrief', body: 'What you did, what to fix, and what’s next — in plain language, the moment you rack the last set.' },
+    { src: '/web/shot-diet.jpg', title: 'Fuel & recovery, scored', body: 'DietTech reads your actual meals and hydration, then coaches your recovery around them.' },
   ];
 
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
-    setStatus({ type: 'loading', message: 'Securing your position...' });
+    setStatus({ type: 'loading', message: 'Joining…' });
 
     try {
-      const baseHost = window.location.origin;
-      const response = await fetch(`${baseHost}/api/waitlist`, {
+      const response = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -131,426 +127,437 @@ export default function Home() {
       if (!response.ok) {
         setStatus({ type: 'error', message: data.error || 'Something went wrong.' });
       } else {
-        setStatus({ type: 'success', message: data.message || 'You are locked in!' });
+        setStatus({ type: 'success', message: data.message || "You're on the list!" });
         setEmail('');
-        // Instantly increment live UI context state organically for crisp tactile user feedback
-        setWaitlistCount(prev => prev + 1);
-        // Fire secondary fetch pass to guarantee hard data consistency with Postgres
+        setWaitlistCount((prev) => prev + 1);
         setTimeout(() => refreshCount(), 500);
       }
     } catch (err) {
-      console.error("Network Fetch Exception:", err);
-      setStatus({ type: 'error', message: 'Network exception: Failed to reach API boundary.' });
+      console.error('Network error:', err);
+      setStatus({ type: 'error', message: 'Could not reach the server. Please try again.' });
     }
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen justify-between bg-[#0d1117] text-[#c9d1d9] overflow-hidden">
+    <div className="relative flex flex-col min-h-screen justify-between bg-base text-fg overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-16 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-[#2ea043]/10 blur-3xl animate-float-slow"></div>
-        <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-[#58a6ff]/10 blur-3xl"></div>
-        <div className="absolute bottom-8 left-16 h-64 w-64 rounded-full bg-[#d2a8ff]/8 blur-3xl"></div>
+        <div className="absolute top-16 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-spottr/10 blur-3xl animate-float-slow"></div>
+        <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-ice/10 blur-3xl"></div>
       </div>
-      
-      {/* Navigation Layer */}
-      <header className="border-b border-[#30363d] bg-[#161b22]/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-3.5">
+
+      {/* Navigation */}
+      <header className="border-b border-line bg-surface/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-          <div className="flex items-center cursor-pointer select-none" onClick={() => setActiveTab('home')}>
-            <Image 
-              src="/spottr_text.png" 
-              alt="SPOTTR Brand Mark" 
-              width={120} 
-              height={28} 
-              priority 
+          <div className="flex items-center gap-2.5 cursor-pointer select-none" onClick={() => setActiveTab('home')}>
+            <Image src="/web/mark.png" alt="SPOTTR" width={30} height={30} priority className="rounded-lg" />
+            <Image
+              src="/spottr_text.png"
+              alt="SPOTTR"
+              width={108}
+              height={25}
+              priority
               className="object-contain w-auto h-auto"
             />
           </div>
 
-          <nav className="flex items-center space-x-1 font-mono text-xs">
-            <button 
-              type="button"
-              onClick={() => setActiveTab('home')}
-              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${activeTab === 'home' ? 'bg-[#30363d] text-white font-semibold' : 'text-[#8b949e] hover:text-white'}`}
-            >
-              Engine
-            </button>
-            <button 
-              type="button"
-              onClick={() => setActiveTab('about')}
-              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${activeTab === 'about' ? 'bg-[#30363d] text-white font-semibold' : 'text-[#8b949e] hover:text-white'}`}
-            >
-              About
-            </button>
-            <button 
-              type="button"
-              onClick={() => setActiveTab('links')}
-              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${activeTab === 'links' ? 'bg-[#30363d] text-white font-semibold' : 'text-[#8b949e] hover:text-white'}`}
-            >
-              Links
-            </button>
-            <button 
-              type="button"
-              onClick={() => setActiveTab('documents')}
-              className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${activeTab === 'documents' ? 'bg-[#30363d] text-white font-semibold' : 'text-[#8b949e] hover:text-white'}`}
-            >
-              Docs
-            </button>
+          <nav className="flex items-center space-x-1 text-sm">
+            {([
+              ['home', 'Home'],
+              ['about', 'About'],
+              ['community', 'Community'],
+            ] as [Tab, string][]).map(([tab, label]) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setActiveTab(tab)}
+                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                  activeTab === tab ? 'bg-line text-white font-semibold' : 'text-muted hover:text-white'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
           </nav>
 
-          <button 
+          <button
             type="button"
             onClick={() => setActiveTab('waitlist')}
-            className="hidden sm:block rounded-full bg-gradient-to-r from-[#238636] to-[#58a6ff] px-4 py-2 text-sm font-medium text-white shadow-[0_10px_40px_rgba(46,160,67,0.18)] transition-transform duration-300 hover:-translate-y-0.5 cursor-pointer"
+            className="hidden sm:block rounded-full bg-gradient-to-r from-spottr to-ice px-4 py-2 text-sm font-semibold text-black shadow-[0_10px_40px_rgba(52,208,88,0.18)] transition-transform duration-300 hover:-translate-y-0.5 cursor-pointer"
           >
-            Join Waitlist
+            Get early access
           </button>
         </div>
       </header>
 
-      {/* Main View Router */}
       <main className="flex-grow">
-        
-        {/* VIEW 1: HOME PLATFORM OVERVIEW */}
+        {/* HOME */}
         {activeTab === 'home' && (
           <>
-            <section className="relative z-10 max-w-4xl mx-auto text-center px-6 pt-24 pb-16 hero-surface animate-fade">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#161b22] border border-[#30363d] text-xs font-medium text-[#8b949e] mb-6">
-                <span className="w-2 h-2 rounded-full bg-[#238636] animate-pulse"></span>
-                Hybrid-AI Expert System Engine v3
+            <section className="relative overflow-hidden animate-fade">
+              {/* Real weight-room photo, darkened for legibility */}
+              <div className="absolute inset-0 -z-10">
+                <Image
+                  src="/web/hero.jpg"
+                  alt="SPOTTR athlete training in the weight room"
+                  fill
+                  priority
+                  sizes="100vw"
+                  className="object-cover object-[62%_center]"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-base via-base/90 to-base/25" />
+                <div className="absolute inset-0 bg-gradient-to-t from-base via-transparent to-base/40" />
               </div>
-              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight text-elite">
-                The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ea043] to-[#58a6ff]">J.A.R.V.I.S.</span> for lifting.
-              </h1>
-              <p className="text-lg md:text-xl text-[#8b949e] max-w-2xl mx-auto mb-10 leading-relaxed">
-                Stop relying on generic LLM wrappers that hallucinate unsafe advice, and simple pre-made spreadsheets that do not conform to your individualized exercise needs. SPOTTR blends enterprise-grade engineering with hyper-precise training heuristics to track performance, adapt to equipment availability, and manage injuries in real time.
-              </p>
-              
-              <div>
-                <button 
-                  type="button"
-                  onClick={() => setActiveTab('waitlist')}
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#238636] to-[#58a6ff] px-8 py-3.5 text-base font-semibold text-white shadow-[0_20px_70px_rgba(46,160,67,0.23)] transition-transform duration-300 hover:-translate-y-0.5 hover:shadow-[0_25px_90px_rgba(46,160,67,0.28)]"
+
+              <div className="max-w-6xl mx-auto px-6 pt-28 pb-28 md:pt-36 md:pb-36">
+                <div className="max-w-2xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface/70 backdrop-blur border border-line text-xs font-medium text-muted mb-6">
+                    <span className="w-2 h-2 rounded-full bg-spottr animate-pulse"></span>
+                    Your AI lifting coach
+                  </div>
+                  <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.05] text-glow">
+                    The <span className="gradient-text">J.A.R.V.I.S.</span> for lifting.
+                  </h1>
+                  <p className="text-lg md:text-xl text-[#c9d1d9] max-w-xl mb-10 leading-relaxed">
+                    SPOTTR builds every workout around your goals, your gym, and your body — then coaches you through it in
+                    real time and breaks down exactly how it went. No generic spreadsheets. No made-up advice.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('waitlist')}
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    Get early access <span className="text-lg">→</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            {/* How it works — animated horizontal carousel */}
+            <section className="max-w-5xl mx-auto px-6 pt-16 pb-10 animate-fade">
+              <div className="text-center mb-8">
+                <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">How it works</h2>
+                <h3 className="text-2xl md:text-3xl font-bold text-white">Three steps, every session</h3>
+              </div>
+
+              <div className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_30px_90px_rgba(0,0,0,.32)]">
+                <div
+                  className="flex transition-transform duration-500 ease-out"
+                  style={{ transform: `translateX(-${activeStep * 100}%)` }}
                 >
-                  Join the Waitlist <span className="text-lg">→</span>
-                </button>
-              </div>
-            </section>
-
-            {/* Blueprint Grid Layout */}
-            <section className="max-w-5xl mx-auto px-6 pt-12 pb-8 animate-fade">
-              <div className="premium-card rounded-[2rem] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,.32)] grid md:grid-cols-12">
-                <div className="md:col-span-5 bg-[#0d1117]/50 border-r border-[#30363d] p-6 flex flex-col justify-center space-y-4">
-                  <div className="mb-2">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-[#8b949e]">The Engine Blueprint</h3>
-                    <p className="text-sm text-white font-bold">Why SPOTTR Isn&apos;t a Wrapper</p>
-                  </div>
-                  {pipelineSteps.map((step, idx) => (
-                    <button
-                      type="button"
-                      key={idx}
-                      onClick={() => setActiveStep(idx)}
-                      className={`w-full text-left p-3.5 rounded-lg border transition-all flex flex-col gap-1.5 cursor-pointer ${
-                        activeStep === idx 
-                          ? 'bg-[#161b22] border-[#30363d] shadow-md ring-1 ring-[#238636]/30' 
-                          : 'bg-transparent border-transparent opacity-60 hover:opacity-90'
-                      }`}
-                    >
-                      <span className="text-sm font-bold text-white">{step.title}</span>
-                      <span className={`self-start text-[10px] font-mono px-2 py-0.5 rounded-md border ${step.color}`}>
-                        {step.badge}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-
-                <div className="md:col-span-7 p-8 flex flex-col justify-between min-h-[320px]">
-                  <div>
-                    <span className="text-xs font-mono text-[#238636] uppercase tracking-widest block mb-1">Interactive Diagnostic Console</span>
-                    <h4 className="text-xl font-bold text-white mb-4">{pipelineSteps[activeStep].title}</h4>
-                    <p className="text-sm text-[#8b949e] leading-relaxed mb-6">
-                      {pipelineSteps[activeStep].description}
-                    </p>
-                  </div>
-
-                  <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-4 font-mono text-xs overflow-x-auto text-[#c9d1d9]">
-                    {activeStep === 0 && (
-                      <pre className="text-[#58a6ff]">
-{`// Loading structured ground truth safely
-df = pd.read_csv("exercise_table_rows_v3.csv")
-# Immediate deterministic validation bypasses model layer
-allowed_slots = df[(df['equipment'].isin(user.available)) & 
-                    (~df['injury_tags'].intersects(user.injuries))]`}
-                      </pre>
-                    )}
-                    {activeStep === 1 && (
-                      <pre className="text-[#2ea043]">
-{`// Executing 3x3 Performance Matrix heuristics
-if user.experience == 'Intermediate' and goal == 'Bodybuilding':
-    slot_1 = Matrix.get_slot_rule("Vertical Pull")
-    slot_2 = Matrix.get_slot_rule("Horizontal Pull")
-    slot_2.apply_modifier("Rest-Pause")`}
-                      </pre>
-                    )}
-                    {activeStep === 2 && (
-                      <pre className="text-[#ff7b72]">
-{`// Asynchronous heavy translation validation
-try:
-    generate_coaching_cues(synchronous_provider=groq.llama3)
-except ExecutionFallback:
-    macro_blueprint = gemini.generate_workout(backup_net=True)`}
-                      </pre>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* SECPOSTURE LOG TERMINAL COMPONENT */}
-            <section className="max-w-5xl mx-auto px-6 pb-16">
-              <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-5 font-mono shadow-inner">
-                <div className="flex justify-between items-center mb-3 text-xs border-b border-[#30363d] pb-2">
-                  <span className="text-[#2ea043] font-bold flex items-center gap-1.5 select-none">
-                    <span className="w-2 h-2 rounded-full bg-[#2ea043] animate-ping"></span>
-                    LIVE SECPOSTURE DIAGNOSTICS
-                  </span>
-                  <span className="text-[#8b949e] text-[10px] select-none">VER: SEC_SPEC_V3</span>
-                </div>
-                <div className="space-y-1.5 text-[11px] text-[#8b949e]">
-                  {systemLogs.map((log, index) => (
-                    <div key={index} className={`truncate ${index === 0 ? 'text-white font-medium' : ''}`}>
-                      {log}
+                  {steps.map((step, idx) => (
+                    <div key={idx} className="w-full shrink-0 px-8 py-10 md:px-16 md:py-14">
+                      <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 min-h-[240px]">
+                        <div className="text-6xl md:text-8xl font-extrabold gradient-text leading-none select-none">
+                          {idx + 1}
+                        </div>
+                        <div className="flex-1">
+                          <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-md border ${accentChip(step.accent)}`}>
+                            {step.tag}
+                          </span>
+                          <h4 className="text-2xl md:text-3xl font-bold text-white mt-3 mb-3">{step.title}</h4>
+                          <p className="text-base text-muted leading-relaxed mb-5 max-w-xl">{step.body}</p>
+                          <div className="flex flex-wrap gap-2">
+                            {step.points.map((pt, i) => (
+                              <span
+                                key={i}
+                                className="inline-flex items-center gap-1.5 text-xs font-medium text-fg bg-surface-2 border border-line rounded-full px-3 py-1.5"
+                              >
+                                <span className={`w-1.5 h-1.5 rounded-full ${step.accent === 'spottr' ? 'bg-spottr' : 'bg-ice'}`}></span>
+                                {pt}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
+
+                <button
+                  type="button"
+                  aria-label="Previous step"
+                  onClick={() => setActiveStep((p) => (p - 1 + steps.length) % steps.length)}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-base/70 border border-line text-white text-lg flex items-center justify-center hover:bg-base transition-colors cursor-pointer"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next step"
+                  onClick={() => setActiveStep((p) => (p + 1) % steps.length)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-base/70 border border-line text-white text-lg flex items-center justify-center hover:bg-base transition-colors cursor-pointer"
+                >
+                  ›
+                </button>
+              </div>
+
+              <div className="flex justify-center gap-2 mt-6">
+                {steps.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    aria-label={`Go to step ${idx + 1}`}
+                    onClick={() => setActiveStep(idx)}
+                    className={`h-2 rounded-full transition-all cursor-pointer ${activeStep === idx ? 'w-8 bg-spottr' : 'w-2 bg-line hover:bg-muted'}`}
+                  />
+                ))}
+              </div>
+            </section>
+
+            {/* Honest differentiators */}
+            <section className="max-w-5xl mx-auto px-6 pb-20">
+              <div className="grid md:grid-cols-3 gap-4">
+                {differentiators.map((d, i) => (
+                  <div key={i} className="bg-surface border border-line rounded-xl p-6">
+                    <div className="w-9 h-9 rounded-lg bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr mb-4">
+                      <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2.2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
+                      </svg>
+                    </div>
+                    <h4 className="text-base font-bold text-white mb-2">{d.title}</h4>
+                    <p className="text-sm text-muted leading-relaxed">{d.body}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* See it in action */}
+            <section className="max-w-6xl mx-auto px-6 pb-24">
+              <div className="text-center mb-12">
+                <h2 className="text-xs tracking-widest text-ice uppercase mb-2">See it in action</h2>
+                <h3 className="text-2xl md:text-3xl font-bold text-white">Built like a coach, not a spreadsheet</h3>
+              </div>
+              <div className="grid sm:grid-cols-3 gap-8">
+                {shots.map((s, i) => (
+                  <div key={i} className="flex flex-col items-center text-center">
+                    <div className="rounded-[2rem] border border-line bg-surface p-2 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+                      <Image
+                        src={s.src}
+                        alt={s.title}
+                        width={300}
+                        height={650}
+                        className="rounded-[1.5rem] w-full h-auto"
+                      />
+                    </div>
+                    <h4 className="text-base font-bold text-white mt-6 mb-2">{s.title}</h4>
+                    <p className="text-sm text-muted leading-relaxed max-w-xs">{s.body}</p>
+                  </div>
+                ))}
               </div>
             </section>
           </>
         )}
 
-        {/* VIEW 2: ABOUT TEAM MODULE */}
+        {/* ABOUT */}
         {activeTab === 'about' && (
           <section className="max-w-4xl mx-auto px-6 py-20 text-left animate-fade">
-            <h2 className="text-xs font-mono tracking-widest text-[#238636] uppercase mb-2">The Architecture Intent</h2>
-            <h3 className="text-3xl font-bold text-white mb-6">Built to challenge basic generative software templates.</h3>
-            
-            <div className="space-y-6 text-[#8b949e] text-sm leading-relaxed max-w-2xl mb-16">
+            <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">Why we built it</h2>
+            <h3 className="text-3xl font-bold text-white mb-6">Most fitness apps either guess or charge a fortune.</h3>
+
+            <div className="space-y-6 text-muted text-base leading-relaxed max-w-2xl mb-16">
               <p>
-                SPOTTR was conceived because the fitness industry lacks an affordable coaching companion. Standard AI fitness options failed under stress tests. Generic models routinely return dangerous biomechanical advice, disregard complex training loops, and hallucinate equipment alternatives that do not align with physical realities. Overall, they are finnicky, unreliable, and unsafe for real-world lifting applications.
+                A great coach is expensive, and most fitness apps hand you a one-size-fits-all spreadsheet or a chatbot
+                that confidently makes things up. Neither knows your gym, your body, or your history — so neither can
+                actually coach you.
               </p>
               <p>
-                By treating lifting as a structural parameter optimization problem, we isolated zero-latency coaching layers (handled natively via specialized hardware targets on Groq) from cognitive dietician models (managed asynchronously via multi-modal pipelines on Gemini 2.5 Flash).
+                SPOTTR is the in-between we wanted ourselves: the structure and accountability of a real strength coach,
+                built on a science-backed engine that never invents exercises, never ignores an injury, and adapts to
+                you every time you train.
               </p>
             </div>
 
-            <div className="border-t border-[#30363d] pt-12">
-              <h3 className="text-xs font-mono tracking-widest text-[#8b949e] uppercase mb-8">About Us</h3>
+            <div className="border-t border-line pt-12">
+              <h3 className="text-xs tracking-widest text-muted uppercase mb-8">The team</h3>
               <div className="grid md:grid-cols-2 gap-8">
-                
-                {/* SAMUEL PETROS ENGINEERING PROFILE CARD */}
-                <div className="bg-[#161b22] border border-[#30363d] p-8 rounded-xl flex flex-col justify-between shadow-lg relative overflow-hidden group min-h-[320px]">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#58a6ff]/5 rounded-bl-full pointer-events-none group-hover:bg-[#58a6ff]/10 transition-colors"></div>
+                <div className="bg-surface border border-line p-8 rounded-xl flex flex-col justify-between shadow-lg relative overflow-hidden group min-h-[300px]">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-ice/5 rounded-bl-full pointer-events-none group-hover:bg-ice/10 transition-colors"></div>
                   <div>
-                    <h4 className="text-xl font-bold text-white mb-1">Samuel Petros</h4>
-                    <span className="text-sm font-mono text-[#58a6ff] block mb-4">Lead Full-Stack AI & Systems Architect</span>
-                    <p className="text-sm text-[#8b949e] leading-relaxed mb-8">
-                      Dual B.S. in Cyber Security and AI & Data Science from Mercyhurst University. Orchestrating the decoupled FastAPI cloud layer, JWT security filters, input vector sanitation bounds, and high-throughput Supabase database storage clusters. The full-stack designer behind SPOTTR.
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <h4 className="text-xl font-bold text-white">Samuel Petros</h4>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-spottr border border-spottr/30 bg-spottr/10 rounded-full px-2 py-0.5">
+                        D1 Athlete
+                      </span>
+                    </div>
+                    <span className="text-sm text-ice block mb-4">Founder &amp; Engineer</span>
+                    <p className="text-sm text-muted leading-relaxed mb-8">
+                      A Division I football player who got tired of fitness apps that don&apos;t train like an athlete.
+                      Builds the brains behind SPOTTR — the coaching engine, the AI, and the security that keeps your
+                      data yours. Cyber Security and AI &amp; Data Science grad, making sure the app never gives advice
+                      it can&apos;t stand behind.
                     </p>
                   </div>
-                  <a 
-                    href="https://www.linkedin.com/in/samuel-petros/" 
-                    target="_blank" 
+                  <a
+                    href="https://www.linkedin.com/in/samuel-petros/"
+                    target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center text-sm font-mono font-semibold text-[#58a6ff] hover:text-[#79c0ff] cursor-pointer transition-colors mt-auto"
+                    className="inline-flex items-center text-sm font-semibold text-ice hover:text-white cursor-pointer transition-colors mt-auto"
                   >
                     More about Sam <span className="ml-1.5 transition-transform group-hover:translate-x-1">→</span>
                   </a>
                 </div>
 
-                {/* GRAYSON PETROS "COMING SOON" */}
-                <div className="bg-[#161b22]/40 border border-[#30363d]/50 p-8 rounded-xl flex flex-col justify-between shadow-sm relative opacity-60 select-none min-h-[320px]">
+                <div className="bg-surface/40 border border-line/50 p-8 rounded-xl flex flex-col justify-between shadow-sm relative opacity-70 select-none min-h-[300px]">
                   <div>
-                    <h4 className="text-xl font-semibold text-[#8b949e] mb-1">Grayson Petros</h4>
-                    <span className="text-sm font-mono text-[#ff7b72]/70 block mb-4">Chief Performance Director</span>
-                    <p className="text-sm text-[#8b949e]/70 leading-relaxed italic">
-                      Author of the core 3x3 slot training matrix playbook and progressive loading constraints.
+                    <h4 className="text-xl font-semibold text-muted mb-1">Grayson Petros</h4>
+                    <span className="text-sm text-spottr/70 block mb-4">Head of Training</span>
+                    <p className="text-sm text-muted/80 leading-relaxed">
+                      The training mind behind SPOTTR&apos;s programming — how sessions are built, progressed, and kept
+                      honest to real strength science.
                     </p>
                   </div>
-                  <div className="inline-flex items-center text-sm font-mono font-medium text-[#ff7b72] uppercase tracking-wider mt-auto pt-6">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#ff7b72] animate-pulse mr-2"></span>
-                    Module Coming Soon
+                  <div className="inline-flex items-center text-sm font-medium text-spottr uppercase tracking-wider mt-auto pt-6">
+                    <span className="w-1.5 h-1.5 rounded-full bg-spottr animate-pulse mr-2"></span>
+                    Profile coming soon
                   </div>
                 </div>
-
               </div>
             </div>
           </section>
         )}
 
-        {/* VIEW 3: EXTERNAL FUNNEL ECOSYSTEM LINKS */}
-        {activeTab === 'links' && (
+        {/* COMMUNITY */}
+        {activeTab === 'community' && (
           <section className="max-w-3xl mx-auto px-6 py-20 text-center animate-fade">
-            <h2 className="text-xs font-mono tracking-widest text-[#58a6ff] uppercase mb-2">Central Operations</h2>
-            <h3 className="text-2xl font-bold text-white mb-10">Access the SPOTTR Hub Ecosystem</h3>
-            
+            <h2 className="text-xs tracking-widest text-ice uppercase mb-2">Get involved</h2>
+            <h3 className="text-2xl font-bold text-white mb-10">Join the SPOTTR community</h3>
+
             <div className="grid gap-4 max-w-md mx-auto text-left">
-              <a 
-                href="https://discord.gg/zmJJHY5mv7" 
-                target="_blank" 
+              <a
+                href="https://discord.gg/zmJJHY5mv7"
+                target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between p-4 bg-[#161b22] border border-[#30363d] rounded-lg hover:border-[#58a6ff]/50 transition-all cursor-pointer shadow-md"
+                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-ice/50 transition-all cursor-pointer shadow-md"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-md bg-[#58a6ff]/10 border border-[#58a6ff]/20 flex items-center justify-center text-[#58a6ff]">
+                  <div className="w-10 h-10 rounded-md bg-ice/10 border border-ice/20 flex items-center justify-center text-ice">
                     <svg className="w-5 h-5 fill-current" viewBox="0 0 127.14 96.36">
-                      <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53a105.73,105.73,0,0,0,32,16.14,79.11,79.11,0,0,0,6.73-11,68.43,68.43,0,0,1-10.61-5.11c.91-.66,1.8-1.34,2.65-2a75.58,75.58,0,0,0,71,0c.85.69,1.74,1.37,2.65,2a68.43,68.43,0,0,1-10.61,5.11,79.11,79.11,0,0,0,6.73,11,105.73,105.73,0,0,0,32-16.14C129.3,54.65,123.5,31.58,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z"/>
+                      <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53a105.73,105.73,0,0,0,32,16.14,79.11,79.11,0,0,0,6.73-11,68.43,68.43,0,0,1-10.61-5.11c.91-.66,1.8-1.34,2.65-2a75.58,75.58,0,0,0,71,0c.85.69,1.74,1.37,2.65,2a68.43,68.43,0,0,1-10.61,5.11,79.11,79.11,0,0,0,6.73,11,105.73,105.73,0,0,0,32-16.14C129.3,54.65,123.5,31.58,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.83,46,53.83,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.07,46,96.07,53,91,65.69,84.69,65.69Z" />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-[#58a6ff] transition-colors">Developer & Beta Discord</h4>
-                    <p className="text-xs text-[#8b949e] mt-0.5">Engage with feature deployments and read real logs directly.</p>
+                    <h4 className="text-sm font-bold text-white group-hover:text-ice transition-colors">Discord</h4>
+                    <p className="text-xs text-muted mt-0.5">Talk training, get help, and shape what we build next.</p>
                   </div>
                 </div>
-                <span className="text-[#8b949e] group-hover:text-[#58a6ff] font-mono text-sm transition-colors mr-1">→</span>
+                <span className="text-muted group-hover:text-ice text-sm transition-colors mr-1">→</span>
               </a>
 
-              <a 
-                href="https://www.instagram.com/spottrfitness.app/?utm_source=ig_web_button_share_sheet" 
-                target="_blank" 
+              <a
+                href="https://www.instagram.com/spottrfitness.app/?utm_source=ig_web_button_share_sheet"
+                target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between p-4 bg-[#161b22] border border-[#30363d] rounded-lg hover:border-[#2ea043]/50 transition-all cursor-pointer shadow-md"
+                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-spottr/50 transition-all cursor-pointer shadow-md"
               >
                 <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-md bg-[#2ea043]/10 border border-[#2ea043]/20 flex items-center justify-center text-[#2ea043]">
+                  <div className="w-10 h-10 rounded-md bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr">
                     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0 3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-[#2ea043] transition-colors">Product Instagram Page</h4>
-                    <p className="text-xs text-[#8b949e] mt-0.5">Biomechanical cues, feature reviews, and technical content specs.</p>
+                    <h4 className="text-sm font-bold text-white group-hover:text-spottr transition-colors">Instagram</h4>
+                    <p className="text-xs text-muted mt-0.5">Form tips, progress, and behind-the-scenes on the build.</p>
                   </div>
                 </div>
-                <span className="text-[#8b949e] group-hover:text-[#2ea043] font-mono text-sm transition-colors mr-1">→</span>
+                <span className="text-muted group-hover:text-spottr text-sm transition-colors mr-1">→</span>
               </a>
 
-              <div className="group flex items-center justify-between p-4 bg-[#161b22]/40 border border-[#30363d]/60 rounded-lg cursor-not-allowed opacity-60">
+              <a
+                href="https://www.tiktok.com/@spottrfit"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-ice/50 transition-all cursor-pointer shadow-md"
+              >
                 <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-md bg-[#30363d]/30 border border-[#30363d]/50 flex items-center justify-center text-[#8b949e]">
-                    <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <div className="w-10 h-10 rounded-md bg-ice/10 border border-ice/20 flex items-center justify-center text-ice">
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                      <path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.6c.27 0 .53.04.78.12V9.66a5.7 5.7 0 0 0-.78-.05 5.7 5.7 0 1 0 5.69 5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.28 4.28 0 0 1-3.25-1.48z" />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-[#8b949e]">STRIDE Threat Vectors Spec</h4>
-                    <p className="text-xs text-[#8b949e] mt-0.5">Zero-trust security design logs. Approaching release schedule.</p>
+                    <h4 className="text-sm font-bold text-white group-hover:text-ice transition-colors">TikTok</h4>
+                    <p className="text-xs text-muted mt-0.5">Quick lifts, form breakdowns, and SPOTTR in action.</p>
                   </div>
                 </div>
-                <span className="text-xs font-mono bg-[#30363d]/40 text-[#8b949e] px-2 py-0.5 rounded mr-1 select-none">Locked</span>
-              </div>
+                <span className="text-muted group-hover:text-ice text-sm transition-colors mr-1">→</span>
+              </a>
             </div>
           </section>
         )}
 
-        {/* VIEW 4: SYSTEM DOCUMENT SPEC FILE CARDS */}
-        {activeTab === 'documents' && (
-          <section className="max-w-3xl mx-auto px-6 py-20 text-center animate-fade">
-            <h2 className="text-xs font-mono tracking-widest text-[#d2a8ff] uppercase mb-2">Technical Specs</h2>
-            <h3 className="text-2xl font-bold text-white mb-10">System Documentation</h3>
-            
-            <div className="grid gap-4 max-w-md mx-auto text-left">
-              <a 
-                href="https://docs.google.com/document/d/1_ylhXqPThw90iqFf5Wpxa5Tr_3BHoIrmFawzgU9lqfc/edit?usp=sharing" 
-                target="_blank" 
-                rel="noreferrer"
-                className="group flex items-center justify-between p-4 bg-[#161b22] border border-[#30363d] rounded-lg hover:border-[#d2a8ff]/50 transition-all cursor-pointer shadow-md"
-              >
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-md bg-[#d2a8ff]/10 border border-[#d2a8ff]/20 flex items-center justify-center text-[#d2a8ff]">
-                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v6h6v10H6z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-[#d2a8ff] transition-colors">Project Manifesto</h4>
-                    <p className="text-xs text-[#8b949e] mt-0.5">Core concept, requirements, and system design specifications.</p>
-                  </div>
-                </div>
-                <span className="text-[#8b949e] group-hover:text-[#d2a8ff] font-mono text-sm transition-colors mr-1">→</span>
-              </a>
-
-              <div className="group flex items-center justify-between p-4 bg-[#161b22]/40 border border-[#30363d]/60 rounded-lg cursor-not-allowed opacity-60">
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 rounded-md bg-[#30363d]/30 border border-[#30363d]/50 flex items-center justify-center text-[#8b949e]">
-                    <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-[#8b949e]">Architecture Schematics</h4>
-                    <p className="text-xs text-[#8b949e] mt-0.5">Database schema and AI flowcharts. Under construction.</p>
-                  </div>
-                </div>
-                <span className="text-xs font-mono bg-[#30363d]/40 text-[#8b949e] px-2 py-0.5 rounded mr-1 select-none">Locked</span>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* VIEW 5: WAITLIST FUNNEL */}
+        {/* WAITLIST */}
         {activeTab === 'waitlist' && (
           <section className="max-w-3xl mx-auto px-6 py-24 text-center animate-fade">
-            <h2 className="text-xs font-mono tracking-widest text-[#2ea043] uppercase mb-2">Early Access</h2>
-            <h3 className="text-3xl font-bold text-white mb-6">Join the Deployment Queue</h3>
-            <p className="text-sm text-[#8b949e] max-w-xl mx-auto mb-10 leading-relaxed">
-              Lock in your spot for the next generation of lifting intelligence. You will be notified as soon as system access is granted.
+            <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">Early access</h2>
+            <h3 className="text-3xl font-bold text-white mb-6">Be first in line</h3>
+            <p className="text-base text-muted max-w-xl mx-auto mb-10 leading-relaxed">
+              Drop your email and we&apos;ll let you know the moment SPOTTR opens up. No spam — just the invite.
             </p>
 
-            <form onSubmit={handleWaitlistSubmit} className="max-w-md mx-auto p-2 sm:p-1 bg-[#161b22] border border-[#30363d] rounded-lg flex flex-col sm:flex-row items-center shadow-xl gap-2 sm:gap-0">
+            <form
+              onSubmit={handleWaitlistSubmit}
+              className="max-w-md mx-auto p-2 sm:p-1 bg-surface border border-line rounded-lg flex flex-col sm:flex-row items-center shadow-xl gap-2 sm:gap-0"
+            >
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={status.type === 'loading'}
-                placeholder="Enter your email for early access"
-                className="bg-transparent text-white px-4 py-3 w-full focus:outline-none text-sm placeholder-[#8b949e] disabled:opacity-50 text-center sm:text-left"
+                placeholder="you@email.com"
+                className="bg-transparent text-white px-4 py-3 w-full focus:outline-none text-sm placeholder-muted disabled:opacity-50 text-center sm:text-left"
                 required
               />
               <button
                 type="submit"
                 disabled={status.type === 'loading'}
-                className="bg-[#238636] hover:bg-[#2ea043] disabled:bg-[#238636]/50 whitespace-nowrap text-white font-medium text-sm px-6 py-3 sm:py-2.5 rounded-md transition-colors w-full sm:w-auto sm:mr-1 cursor-pointer"
+                className="bg-spottr hover:bg-spottr-deep disabled:opacity-50 whitespace-nowrap text-black font-semibold text-sm px-6 py-3 sm:py-2.5 rounded-md transition-colors w-full sm:w-auto sm:mr-1 cursor-pointer"
               >
-                {status.type === 'loading' ? 'Securing...' : 'Secure Spot'}
+                {status.type === 'loading' ? 'Joining…' : 'Join'}
               </button>
             </form>
 
             {status.message && (
-              <p className={`text-xs mt-4 font-medium ${status.type === 'error' ? 'text-[#ff7b72]' : 'text-[#2ea043]'}`}>
+              <p className={`text-xs mt-4 font-medium ${status.type === 'error' ? 'text-[#ff7b72]' : 'text-spottr'}`}>
                 {status.message}
               </p>
             )}
 
-            {/* LIVE SYSTEM SYNCED METRIC COUNTER DOCK */}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-[#8b949e] bg-[#161b22]/80 border border-[#30363d] max-w-full w-fit mx-auto px-4 py-2.5 rounded-full shadow-md select-none">
-              <div className="flex -space-x-2">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#2ea043] to-[#238636] border-2 border-[#161b22]"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#58a6ff] to-[#1f6feb] border-2 border-[#161b22]"></div>
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#d2a8ff] to-[#bc8cff] border-2 border-[#161b22]"></div>
+            {waitlistCount >= WAITLIST_THRESHOLD ? (
+              <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-muted bg-surface/80 border border-line max-w-full w-fit mx-auto px-4 py-2.5 rounded-full shadow-md select-none">
+                <div className="flex -space-x-2">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-spottr to-spottr-deep border-2 border-surface"></div>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-ice to-ice-deep border-2 border-surface"></div>
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-spottr to-ice border-2 border-surface"></div>
+                </div>
+                <span>
+                  Join <span className="text-white font-bold tracking-wide">{waitlistCount.toLocaleString()}</span>{' '}
+                  lifters on the early-access list
+                </span>
               </div>
-              <span>Join <span className="text-white font-bold tracking-wide">{waitlistCount.toLocaleString()}</span> others waiting for SPOTTR</span>
-            </div>
+            ) : (
+              <div className="mt-10 flex items-center justify-center gap-2.5 text-xs sm:text-sm text-muted bg-surface/80 border border-line max-w-full w-fit mx-auto px-4 py-2.5 rounded-full shadow-md select-none">
+                <span className="w-2 h-2 rounded-full bg-spottr animate-pulse"></span>
+                <span>
+                  <span className="text-white font-bold">Founding access</span> — get in before we open to everyone
+                </span>
+              </div>
+            )}
           </section>
         )}
-
       </main>
 
-      {/* Global Page Footer */}
-      <footer className="border-t border-[#30363d] bg-[#0d1117] px-6 py-6 text-center text-xs text-[#8b949e]">
+      {/* Footer */}
+      <footer className="border-t border-line bg-base px-6 py-6 text-center text-xs text-muted">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p>© 2026 SPOTTR Architecture. Never lift alone.</p>
+          <p>© 2026 SPOTTR · Never lift alone.</p>
           <div className="flex space-x-6">
-            <span className="hover:text-white cursor-pointer" onClick={() => setActiveTab('about')}>Security Spec</span>
-            <span className="hover:text-white cursor-pointer" onClick={() => setActiveTab('links')}>API Hub</span>
+            <span className="hover:text-white cursor-pointer" onClick={() => setActiveTab('community')}>
+              Community
+            </span>
+            <span className="hover:text-white cursor-pointer" onClick={() => setActiveTab('about')}>
+              About
+            </span>
           </div>
         </div>
       </footer>

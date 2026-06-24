@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# source media — only the optimized copies in public/web/ are shipped
+/public/stockimg/
+/public/screenshots/
+/public/logos/
