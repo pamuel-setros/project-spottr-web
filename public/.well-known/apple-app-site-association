@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["SZC663LLCS.com.spottrfit.app"],
+        "components": [
+          {
+            "/": "/g/*",
+            "comment": "Gym QR posters (spottrfit.com/g/<slug>) open SPOTTR's in-app scanner"
+          }
+        ]
+      }
+    ]
+  }
+}

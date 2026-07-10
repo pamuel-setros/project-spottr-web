@@ -345,6 +345,43 @@ export default function Home() {
                 ))}
               </div>
             </section>
+
+            {/* For gym owners — the B2B funnel into the partner portal */}
+            <section className="max-w-5xl mx-auto px-6 pb-24">
+              <div className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_30px_90px_rgba(0,0,0,.32)]">
+                <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-spottr/10 blur-3xl" />
+                <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-12 px-8 py-10 md:px-14 md:py-14">
+                  <div className="flex-1">
+                    <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">For gym owners</h2>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Put SPOTTR on your gym floor.</h3>
+                    <p className="text-base text-muted leading-relaxed max-w-xl mb-6">
+                      One QR poster at your front desk. Members scan it and their AI coach instantly builds
+                      every workout around your exact equipment — every rack, every machine, nothing they
+                      can&apos;t find.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {['Free to apply', 'Print-ready branded poster', 'You control your equipment list'].map((pt) => (
+                        <span
+                          key={pt}
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-fg bg-surface-2 border border-line rounded-full px-3 py-1.5"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-spottr"></span>
+                          {pt}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="shrink-0">
+                    <a
+                      href="https://api.spottrfit.com/partner"
+                      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+                    >
+                      Become a partner gym <span className="text-lg">→</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </section>
           </>
         )}
 
@@ -552,6 +589,9 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <p>© 2026 SPOTTR · Never lift alone.</p>
           <div className="flex space-x-6">
+            <a href="https://api.spottrfit.com/partner" className="hover:text-white">
+              Gym Partners
+            </a>
             <span className="hover:text-white cursor-pointer" onClick={() => setActiveTab('community')}>
               Community
             </span>
