@@ -10,6 +10,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import PhotoCarousel from './carousel';
 
 type Gym = {
   slug: string;
@@ -18,6 +19,12 @@ type Gym = {
   logo_url: string | null;
   equipment: string[];
   verified: boolean;
+  description?: string | null;
+  photos?: string[];
+  website?: string | null;
+  instagram?: string | null;
+  phone?: string | null;
+  members_count?: number | null;
 };
 
 const API_URL = 'https://api.spottrfit.com';
@@ -93,7 +100,21 @@ export default async function GymPage({
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3 leading-[1.08]">
             Train at <span className="gradient-text">{gym.name}</span>
           </h1>
-          {gym.city && <p className="text-sm text-muted mb-8">{gym.city}</p>}
+          {gym.city && <p className="text-sm text-muted mb-2">{gym.city}</p>}
+          {(gym.members_count ?? 0) >= 3 && (
+            <p className="text-xs font-semibold text-spottr mb-6">
+              {gym.members_count} SPOTTR members train here
+            </p>
+          )}
+          {!((gym.members_count ?? 0) >= 3) && <div className="mb-6" />}
+
+          <PhotoCarousel photos={gym.photos ?? []} gymName={gym.name} />
+
+          {gym.description && (
+            <p className="text-base text-[#c9d1d9] leading-relaxed mb-8 whitespace-pre-line">
+              {gym.description}
+            </p>
+          )}
 
           <p className="text-base md:text-lg text-[#c9d1d9] leading-relaxed mb-8">
             This gym&apos;s full equipment loadout lives in SPOTTR. Scan the poster in the app and your
@@ -112,6 +133,29 @@ export default async function GymPage({
                 <span className="text-xs font-medium text-muted border border-line rounded-full px-3 py-1.5">
                   +{equipmentCount - preview.length} more
                 </span>
+              )}
+            </div>
+          )}
+
+          {(gym.website || gym.instagram || gym.phone) && (
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-10 text-sm">
+              {gym.website && (
+                <a href={gym.website} target="_blank" rel="noopener noreferrer"
+                   className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-muted hover:text-white hover:border-spottr/50 transition-colors">
+                  🌐 Website
+                </a>
+              )}
+              {gym.instagram && (
+                <a href={`https://instagram.com/${gym.instagram}`} target="_blank" rel="noopener noreferrer"
+                   className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-muted hover:text-white hover:border-spottr/50 transition-colors">
+                  📸 @{gym.instagram}
+                </a>
+              )}
+              {gym.phone && (
+                <a href={`tel:${gym.phone.replace(/[^+\d]/g, '')}`}
+                   className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-4 py-2 text-muted hover:text-white hover:border-spottr/50 transition-colors">
+                  📞 {gym.phone}
+                </a>
               )}
             </div>
           )}
