@@ -27,7 +27,9 @@ type Gym = {
   members_count?: number | null;
 };
 
-const API_URL = 'https://api.spottrfit.com';
+// Env override exists for local dev against a mock API; production always
+// falls through to the real host.
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.spottrfit.com';
 
 async function getGym(slug: string): Promise<Gym | null> {
   const clean = slug.trim().toLowerCase();
@@ -110,13 +112,16 @@ export default async function GymPage({
 
           <PhotoCarousel photos={gym.photos ?? []} gymName={gym.name} />
 
+          {/* NB: no `text-base` on these paragraphs — the theme has a COLOR named
+              base, so text-base paints near-black and (by utility sort order)
+              beats arbitrary hex text colors. Default 16px is what it meant. */}
           {gym.description && (
-            <p className="text-base text-[#c9d1d9] leading-relaxed mb-8 whitespace-pre-line">
+            <p className="text-[#c9d1d9] leading-relaxed mb-8 whitespace-pre-line">
               {gym.description}
             </p>
           )}
 
-          <p className="text-base md:text-lg text-[#c9d1d9] leading-relaxed mb-8">
+          <p className="md:text-lg text-[#c9d1d9] leading-relaxed mb-8">
             This gym&apos;s full equipment loadout lives in SPOTTR. Scan the poster in the app and your
             AI coach builds every session around what&apos;s actually on this floor —{' '}
             <span className="text-white font-semibold">{equipmentCount} pieces of equipment</span>, nothing invented.
