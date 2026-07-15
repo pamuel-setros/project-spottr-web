@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type Tab = 'home' | 'about' | 'community' | 'waitlist';
 
@@ -179,13 +180,12 @@ export default function Home() {
             ))}
           </nav>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab('waitlist')}
+          <Link
+            href="/get?src=site"
             className="hidden sm:block rounded-full bg-gradient-to-r from-spottr to-ice px-4 py-2 text-sm font-semibold text-black shadow-[0_10px_40px_rgba(52,208,88,0.18)] transition-transform duration-300 hover:-translate-y-0.5 cursor-pointer"
           >
-            Get early access
-          </button>
+            Get SPOTTR
+          </Link>
         </div>
       </header>
 
@@ -221,13 +221,12 @@ export default function Home() {
                     SPOTTR builds every workout around your goals, your gym, and your body — then coaches you through it in
                     real time and breaks down exactly how it went. No generic spreadsheets. No made-up advice.
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('waitlist')}
+                  <Link
+                    href="/get?src=site"
                     className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
                   >
-                    Get early access <span className="text-lg">→</span>
-                  </button>
+                    Get SPOTTR <span className="text-lg">→</span>
+                  </Link>
                 </div>
               </div>
             </section>

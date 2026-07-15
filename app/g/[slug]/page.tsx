@@ -173,14 +173,15 @@ export default async function GymPage({
               Open in the SPOTTR app <span className="text-lg">→</span>
             </a>
             <Link
-              href="/"
+              href={`/get?src=g-${gym.slug}`}
               className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-8 py-3.5 text-base font-semibold text-white transition-colors hover:border-spottr/50"
             >
               Get SPOTTR
             </Link>
           </div>
           <p className="text-xs text-muted mt-6">
-            Don&apos;t have the app yet? SPOTTR is in early access — join the list and we&apos;ll send your invite.
+            Don&apos;t have the app yet? Tap <span className="text-white font-semibold">Get SPOTTR</span> and
+            you&apos;ll be training here in minutes.
           </p>
         </div>
       </main>
