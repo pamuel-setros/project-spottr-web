@@ -8,7 +8,7 @@
 // Paste the public TestFlight link (App Store Connect → TestFlight → External
 // group → Public Link) when the external group is live. While null, /get falls
 // back to the waitlist form.
-export const TESTFLIGHT_URL: string | null = null;
+export const TESTFLIGHT_URL: string | null = 'https://testflight.apple.com/join/Qh5CFFtR';
 
 // The App Store product page — set at public launch; it wins over TestFlight.
 export const APP_STORE_URL: string | null = null;
