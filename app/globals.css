@@ -85,6 +85,23 @@
   .animate-float-slow {
     animation: floatSlow 8s ease-in-out infinite;
   }
+
+  /* Auto-advance clock for the "How it works" demo: the bar filling IS the
+     timer — onAnimationEnd moves to the next step, so pausing the animation
+     pauses the demo with perfect sync. */
+  .animate-progress {
+    width: 0%;
+    animation: progressFill 6s linear forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* No fill animation → onAnimationEnd never fires → demo becomes
+       click-to-advance only, which is the right behavior here. */
+    .animate-progress {
+      animation: none;
+      width: 100%;
+    }
+  }
 }
 
 @keyframes fadeIn {
@@ -95,6 +112,15 @@
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes progressFill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
   }
 }
 
