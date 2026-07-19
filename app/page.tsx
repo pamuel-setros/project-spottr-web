@@ -401,24 +401,31 @@ export default function Home() {
                   sizes="100vw"
                   className="object-cover object-[center_30%]"
                 />
-                <div className="absolute inset-0 bg-base/60" />
+                <div className="absolute inset-0 bg-base/45" />
                 <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-base to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-base to-transparent" />
               </div>
 
-              <div className="max-w-6xl mx-auto px-6 py-28 md:py-36 text-center">
-                <h2 className="text-xs tracking-widest text-ice uppercase mb-3">Built in the weight room</h2>
-                <h3 className="text-3xl md:text-5xl font-extrabold text-white text-glow mb-5">Never lift alone.</h3>
-                <p className="text-base md:text-lg text-[#c9d1d9] max-w-xl mx-auto mb-9 leading-relaxed [text-shadow:0_2px_18px_rgba(0,0,0,0.9),0_0_4px_rgba(0,0,0,0.6)]">
-                  SPOTTR was built by athletes who got tired of apps that guess — a coach in your pocket for every
-                  session, not a spreadsheet.
-                </p>
-                <Link
-                  href="/get?src=site"
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
-                >
-                  Get SPOTTR <span className="text-lg">→</span>
-                </Link>
+              <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
+                {/* Frosted panel so the copy stays readable over any part of
+                    the photo, including the bright areas. */}
+                <div className="inline-block max-w-2xl rounded-[2rem] bg-base/70 backdrop-blur-md border border-white/10 px-7 py-9 md:px-14 md:py-12 shadow-[0_30px_90px_rgba(0,0,0,0.45)]">
+                  <h2 className="text-xs tracking-widest text-ice uppercase mb-3">Built in the weight room</h2>
+                  <h3 className="text-3xl md:text-5xl font-extrabold text-white text-glow mb-5">Never lift alone.</h3>
+                  {/* No `text-base` here: the theme has a *color* named `base`,
+                      so `text-base` paints the text near-black instead of
+                      sizing it. 1rem is the default size anyway. */}
+                  <p className="md:text-lg text-[#c9d1d9] max-w-xl mx-auto mb-9 leading-relaxed">
+                    SPOTTR was built by athletes who got tired of apps that guess — a coach in your pocket for every
+                    session, not a spreadsheet.
+                  </p>
+                  <Link
+                    href="/get?src=site"
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    Get SPOTTR <span className="text-lg">→</span>
+                  </Link>
+                </div>
               </div>
             </section>
 
@@ -503,7 +510,7 @@ export default function Home() {
                   className="object-cover w-full h-auto"
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-base/95 to-transparent px-4 pt-12 pb-3">
-                  <p className="text-xs text-muted">Sam (right) and Grayson (left) — born on the gym floor, not in a boardroom.</p>
+                  <p className="text-xs text-muted">Sam (right) and Grayson (left) — SPOTTR came from the gym floor, not in a boardroom.</p>
                 </div>
               </div>
             </div>
