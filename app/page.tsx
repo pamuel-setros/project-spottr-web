@@ -355,20 +355,38 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Honest differentiators */}
-            <section className="max-w-5xl mx-auto px-6 pb-20">
-              <div className="grid md:grid-cols-3 gap-4">
-                {differentiators.map((d, i) => (
-                  <div key={i} className="bg-surface border border-line rounded-xl p-6">
-                    <div className="w-9 h-9 rounded-lg bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr mb-4">
-                      <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2.2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
-                      </svg>
+            {/* Honest differentiators — promises on the left, a real partner
+                floor on the right as the proof */}
+            <section className="max-w-6xl mx-auto px-6 pb-20">
+              <div className="grid lg:grid-cols-[1fr_420px] gap-4 lg:gap-6 items-stretch">
+                <div className="flex flex-col gap-4">
+                  {differentiators.map((d, i) => (
+                    <div key={i} className="flex-1 bg-surface border border-line rounded-xl p-6 flex gap-5 items-start">
+                      <div className="shrink-0 w-9 h-9 rounded-lg bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr">
+                        <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2.2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-base font-bold text-white mb-2">{d.title}</h4>
+                        <p className="text-sm text-muted leading-relaxed">{d.body}</p>
+                      </div>
                     </div>
-                    <h4 className="text-base font-bold text-white mb-2">{d.title}</h4>
-                    <p className="text-sm text-muted leading-relaxed">{d.body}</p>
+                  ))}
+                </div>
+                <div className="relative overflow-hidden rounded-xl border border-line min-h-[280px] shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+                  <Image
+                    src="/web/gym-floor.jpg"
+                    alt="Inside Raffa's Gym, a SPOTTR partner floor with racks, plates and dumbbells"
+                    fill
+                    sizes="(min-width: 1024px) 420px, 100vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-5 pt-14 pb-4">
+                    <p className="text-sm font-semibold text-white">Raffa&apos;s Gym — a SPOTTR partner floor.</p>
+                    <p className="text-xs text-[#c9d1d9] mt-1">If it&apos;s not on this floor, it&apos;s not in the workout.</p>
                   </div>
-                ))}
+                </div>
               </div>
             </section>
 
@@ -417,7 +435,7 @@ export default function Home() {
                       every workout around your exact equipment — every rack, every machine, nothing they
                       can&apos;t find.
                     </p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-8">
                       {['Free to apply', 'Print-ready branded poster', 'You control your equipment list'].map((pt) => (
                         <span
                           key={pt}
@@ -428,14 +446,27 @@ export default function Home() {
                         </span>
                       ))}
                     </div>
-                  </div>
-                  <div className="shrink-0">
                     <a
                       href="https://api.spottrfit.com/partner"
                       className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
                     >
                       Become a partner gym <span className="text-lg">→</span>
                     </a>
+                  </div>
+                  <div className="shrink-0 md:w-[300px]">
+                    <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                      <Image
+                        src="/web/qr-gym.jpg"
+                        alt="A SPOTTR scan-to-train QR placard standing on a windowsill at Raffa's Gym"
+                        width={1100}
+                        height={1375}
+                        sizes="(min-width: 768px) 300px, 100vw"
+                        className="object-cover w-full h-auto"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-4 pt-10 pb-3">
+                        <p className="text-xs text-[#c9d1d9]">Live at Raffa&apos;s Gym — placard Nº 011.</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -464,15 +495,31 @@ export default function Home() {
               </div>
               <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
                 <Image
-                  src="/web/hero.jpg"
-                  alt="SPOTTR founders training in the weight room"
-                  width={600}
-                  height={400}
-                  className="object-cover w-full h-full"
+                  src="/web/founders.jpg"
+                  alt="Sam and Grayson Petros in the gym between sets"
+                  width={1109}
+                  height={1600}
+                  sizes="(min-width: 768px) 300px, 100vw"
+                  className="object-cover w-full h-auto"
                 />
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-base/90 to-transparent px-4 pt-10 pb-3">
-                  <p className="text-xs text-muted">Born on the gym floor, not in a boardroom.</p>
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-base/95 to-transparent px-4 pt-12 pb-3">
+                  <p className="text-xs text-muted">Sam (right) and Grayson (left) — born on the gym floor, not in a boardroom.</p>
                 </div>
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.4)] mb-16 h-56 md:h-72">
+              <Image
+                src="/web/gym-room.jpg"
+                alt="A partner home gym with racks, benches, cardio machines and a whiteboard of PRs"
+                fill
+                sizes="(min-width: 896px) 896px, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-5 pt-12 pb-4">
+                <p className="text-xs text-[#c9d1d9]">
+                  Real gyms aren&apos;t showrooms. SPOTTR is built for rooms like this one.
+                </p>
               </div>
             </div>
 
