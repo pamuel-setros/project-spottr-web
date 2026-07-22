@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   title: "SPOTTR | The J.A.R.V.I.S. for Lifting",
   description:
     "An AI lifting coach that builds every session around your gym, your body, and your injuries — then coaches you through it in real time.",
+  icons: {
+    icon: "/logos/SPOTTR_logo_1.png",
+  },
+  openGraph: {
+    images: "/logos/SPOTTR_logo_1.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
