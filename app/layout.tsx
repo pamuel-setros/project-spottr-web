@@ -16,14 +16,30 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://spottrfit.com"),
   title: "SPOTTR | The J.A.R.V.I.S. for Lifting",
   description:
     "An AI lifting coach that builds every session around your gym, your body, and your injuries — then coaches you through it in real time.",
-  icons: {
-    icon: "/logos/SPOTTR_logo_1.png",
-  },
   openGraph: {
-    images: "/logos/SPOTTR_logo_1.png",
+    title: "SPOTTR | The J.A.R.V.I.S. for Lifting",
+    description:
+      "An AI lifting coach that builds every session around your gym, your body, and your injuries — then coaches you through it in real time.",
+    url: "https://spottrfit.com",
+    siteName: "SPOTTR",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 1200,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SPOTTR | The J.A.R.V.I.S. for Lifting",
+    description:
+      "An AI lifting coach that builds every session around your gym, your body, and your injuries — then coaches you through it in real time.",
+    images: ["/opengraph-image.png"],
   },
 };
 
