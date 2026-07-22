@@ -93,6 +93,35 @@ export default function Home() {
       ? 'text-spottr border-spottr/30 bg-spottr/10'
       : 'text-ice border-ice/30 bg-ice/10';
 
+  // The 5 features behind the "5 features, 1 app" headline.
+  const features = [
+    {
+      title: 'Adaptive AI workout engine',
+      body: 'Programming built around your goal — strength, hypertrophy, or athleticism — your experience level, and a proven split like PPL or Upper/Lower. It orders every session around your equipment and injuries, so it never prescribes a lift you can’t actually do.',
+      accent: 'spottr' as const,
+    },
+    {
+      title: '"DietTech" nutrition suite',
+      body: 'Snap a photo and it’s logged — no manual entry. Personalized calorie and macro targets, a real-time dashboard for macros and hydration, a plate-quality score, and a weekly AI report with what to adjust.',
+      accent: 'ice' as const,
+    },
+    {
+      title: 'Real-time coaching, every set',
+      body: 'Form and tempo cues while you lift, then a plain-language debrief the moment you rack the last set — what you did, what to fix, and what’s next.',
+      accent: 'spottr' as const,
+    },
+    {
+      title: 'Apple Watch companion',
+      body: 'Train phone-free with your workout cached on your wrist. Real-time heart rate and calorie burn, plus set completion, load adjustments, and rest-timer control from the watch.',
+      accent: 'ice' as const,
+    },
+    {
+      title: 'Progress that stays in view',
+      body: 'Streaks that account for recovery, not just gym visits. Live Activities, Dynamic Island, and home-screen widgets keep your session visible without opening the app.',
+      accent: 'spottr' as const,
+    },
+  ];
+
   const differentiators = [
     {
       title: "Won't invent equipment you don't have",
@@ -212,7 +241,7 @@ export default function Home() {
                     Your AI lifting coach
                   </div>
                   <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.05] text-glow">
-                    The <span className="gradient-text">J.A.R.V.I.S.</span> for lifting.
+                    5 features, 1 app. Your personalized <span className="gradient-text">AI coach</span>.
                   </h1>
                   <p className="text-lg md:text-xl text-[#c9d1d9] max-w-xl mb-10 leading-relaxed">
                     SPOTTR builds every workout around your goals, your gym, and your body — then coaches you through it in
@@ -225,6 +254,37 @@ export default function Home() {
                     Get SPOTTR <span className="text-lg">→</span>
                   </Link>
                 </div>
+              </div>
+            </section>
+
+            {/* 5 features, 1 app — the headline's promise, spelled out */}
+            <section className="max-w-6xl mx-auto px-6 pt-4 pb-20 animate-fade">
+              <div className="text-center mb-10">
+                <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">Everything in one app</h2>
+                <h3 className="text-2xl md:text-3xl font-bold text-white">5 features. 1 app.</h3>
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {features.map((f, i) => (
+                  <div
+                    key={i}
+                    className={`bg-surface border border-line rounded-xl p-6 flex flex-col gap-4 ${
+                      i === features.length - 1 ? 'sm:col-span-2 lg:col-span-1' : ''
+                    }`}
+                  >
+                    <div
+                      className={`shrink-0 w-9 h-9 rounded-lg flex items-center justify-center font-bold text-sm border ${accentChip(
+                        f.accent
+                      )}`}
+                    >
+                      {i + 1}
+                    </div>
+                    <div>
+                      <h4 className="text-base font-bold text-white mb-2">{f.title}</h4>
+                      <p className="text-sm text-muted leading-relaxed">{f.body}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </section>
 
