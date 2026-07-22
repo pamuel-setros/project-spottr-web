@@ -24,8 +24,10 @@ export default function Home() {
   const WAITLIST_THRESHOLD = 250;
   const [waitlistCount, setWaitlistCount] = useState<number>(WAITLIST_SEED);
 
-  // "How it works" interactive stepper
+  // Interactive product demo: which step is active, and whether auto-advance
+  // is paused (hover/focus = the user is reading, so stop the clock).
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [demoPaused, setDemoPaused] = useState<boolean>(false);
 
   const refreshCount = useCallback(async () => {
     try {
@@ -44,37 +46,45 @@ export default function Home() {
     }
   }, []);
 
-  useEffect(() => {
-    void refreshCount();
-  }, [refreshCount]);
-
+  // Covers initial mount too — activeTab starts on 'home'.
   useEffect(() => {
     if (activeTab === 'waitlist' || activeTab === 'home') {
       void refreshCount();
     }
   }, [activeTab, refreshCount]);
 
-  const steps = [
+  // Each step is backed by a real screenshot from the app — the demo walks
+  // through an actual session loop: plan → train & debrief → recover.
+  const demoSteps = [
     {
-      tag: 'Built for your gym',
+      tag: 'Built around you',
       accent: 'spottr' as const,
       title: 'Tell it your reality',
-      body: 'Your goal, your experience, the exact equipment in front of you, and any injuries. SPOTTR builds around what is actually true for you today — not a generic template someone else wrote.',
-      points: ['Equipment-aware', 'Injury-aware', 'Goal-specific'],
-    },
-    {
-      tag: 'Science-backed',
-      accent: 'ice' as const,
-      title: 'Get a session that fits',
-      body: 'A structured workout assembled from real strength science — never random, never made up. It respects how much time you have and trains around your limits automatically.',
-      points: ['Deterministic engine', 'Fits your time', 'No guesswork'],
+      body: 'Your goal, your equipment, your time, and any injuries. SPOTTR assembles a session from real strength science that fits what is actually true for you today — and automatically trains around anything you can’t load.',
+      points: ['Equipment-aware', 'Injury-aware', 'Fits your time'],
+      shot: '/web/shot-coach.jpg',
+      shotAlt: "SPOTTR Coach's Plan screen showing a workout automatically adjusted around a shoulder injury",
+      caption: 'A real plan — already adjusted around a bad shoulder.',
     },
     {
       tag: 'During & after',
-      accent: 'spottr' as const,
+      accent: 'ice' as const,
       title: 'Lift with a coach in your ear',
-      body: 'Form and tempo cues the moment you need them, then a clear post-workout breakdown: what you did, what to fix, and exactly what comes next.',
-      points: ['Real-time cues', 'Post-workout analysis', 'Always progressing'],
+      body: 'Form and tempo cues the moment you need them, then a clear debrief the moment you rack the last set: what you did, what to fix, and exactly what comes next.',
+      points: ['Real-time cues', 'Post-workout debrief', 'Always progressing'],
+      shot: '/web/shot-debrief.jpg',
+      shotAlt: 'SPOTTR post-workout debrief screen with fuel, hydration and sleep guidance',
+      caption: 'The post-workout debrief, in plain language.',
+    },
+    {
+      tag: 'Fuel & recovery',
+      accent: 'spottr' as const,
+      title: 'Recover like it matters',
+      body: 'DietTech reads your actual meals and hydration, scores your recovery, and feeds it all back into your next session — so your plan is never frozen.',
+      points: ['Meals, scored', 'Hydration tracked', 'Feeds your next plan'],
+      shot: '/web/shot-diet.jpg',
+      shotAlt: 'SPOTTR DietTech nutrition screen tracking calories, macros and hydration',
+      caption: 'Fuel and hydration, tracked against your targets.',
     },
   ];
 
@@ -82,13 +92,6 @@ export default function Home() {
     a === 'spottr'
       ? 'text-spottr border-spottr/30 bg-spottr/10'
       : 'text-ice border-ice/30 bg-ice/10';
-
-  // "How it works" carousel: auto-advance every 5s, resets whenever the step changes
-  // (so manual nav doesn't fight the timer).
-  useEffect(() => {
-    const id = setInterval(() => setActiveStep((p) => (p + 1) % steps.length), 5000);
-    return () => clearInterval(id);
-  }, [activeStep, steps.length]);
 
   const differentiators = [
     {
@@ -103,12 +106,6 @@ export default function Home() {
       title: 'Re-adapts every single session',
       body: 'It learns from how the last workout went and adjusts the next one. Your plan is never frozen.',
     },
-  ];
-
-  const shots = [
-    { src: '/web/shot-coach.jpg', title: 'Trains around your injuries', body: 'Every session is built for your equipment and auto-adjusts around anything you can’t load that day — no risky swaps.' },
-    { src: '/web/shot-debrief.jpg', title: 'A real post-workout debrief', body: 'What you did, what to fix, and what’s next — in plain language, the moment you rack the last set.' },
-    { src: '/web/shot-diet.jpg', title: 'Fuel & recovery, scored', body: 'DietTech reads your actual meals and hydration, then coaches your recovery around them.' },
   ];
 
   const handleWaitlistSubmit = async (e: React.FormEvent) => {
@@ -150,13 +147,13 @@ export default function Home() {
       <header className="border-b border-line bg-surface/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
           <div className="flex items-center gap-2.5 cursor-pointer select-none" onClick={() => setActiveTab('home')}>
-            <Image src="/web/mark.png" alt="SPOTTR" width={30} height={30} priority className="rounded-lg" />
+            <Image src="/web/mark.png" alt="SPOTTR" width={30} height={30} loading="eager" className="rounded-lg" />
             <Image
               src="/spottr_text.png"
               alt="SPOTTR"
               width={108}
               height={25}
-              priority
+              loading="eager"
               className="object-contain w-auto h-auto"
             />
           </div>
@@ -200,7 +197,7 @@ export default function Home() {
                   src="/web/hero.jpg"
                   alt="SPOTTR athlete training in the weight room"
                   fill
-                  priority
+                  preload
                   sizes="100vw"
                   className="object-cover object-[62%_center]"
                 />
@@ -231,122 +228,209 @@ export default function Home() {
               </div>
             </section>
 
-            {/* How it works — animated horizontal carousel */}
-            <section className="max-w-5xl mx-auto px-6 pt-16 pb-10 animate-fade">
-              <div className="text-center mb-8">
+            {/* How it works — interactive demo driven by real app screens */}
+            <section className="max-w-6xl mx-auto px-6 pt-16 pb-20 animate-fade">
+              <div className="text-center mb-10">
                 <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">How it works</h2>
-                <h3 className="text-2xl md:text-3xl font-bold text-white">Three steps, every session</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-white">One loop, every session</h3>
+                <p className="text-sm text-muted mt-3 max-w-md mx-auto">
+                  These are real screens from the app — click through the loop.
+                </p>
               </div>
 
-              <div className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_30px_90px_rgba(0,0,0,.32)]">
-                <div
-                  className="flex transition-transform duration-500 ease-out"
-                  style={{ transform: `translateX(-${activeStep * 100}%)` }}
-                >
-                  {steps.map((step, idx) => (
-                    <div key={idx} className="w-full shrink-0 px-8 py-10 md:px-16 md:py-14">
-                      <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 min-h-[240px]">
-                        <div className="text-6xl md:text-8xl font-extrabold gradient-text leading-none select-none">
-                          {idx + 1}
-                        </div>
-                        <div className="flex-1">
-                          <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-md border ${accentChip(step.accent)}`}>
-                            {step.tag}
-                          </span>
-                          <h4 className="text-2xl md:text-3xl font-bold text-white mt-3 mb-3">{step.title}</h4>
-                          <p className="text-base text-muted leading-relaxed mb-5 max-w-xl">{step.body}</p>
-                          <div className="flex flex-wrap gap-2">
-                            {step.points.map((pt, i) => (
-                              <span
-                                key={i}
-                                className="inline-flex items-center gap-1.5 text-xs font-medium text-fg bg-surface-2 border border-line rounded-full px-3 py-1.5"
+              <div
+                className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_30px_90px_rgba(0,0,0,.32)]"
+                onMouseEnter={() => setDemoPaused(true)}
+                onMouseLeave={() => setDemoPaused(false)}
+                onFocusCapture={() => setDemoPaused(true)}
+                onBlurCapture={() => setDemoPaused(false)}
+              >
+                <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-spottr/10 blur-3xl" />
+                <div className="pointer-events-none absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-ice/10 blur-3xl" />
+
+                <div className="grid md:grid-cols-[1fr_auto] gap-8 md:gap-14 items-center px-6 py-8 md:px-12 md:py-12">
+                  {/* Step selector — click a step, watch the phone change */}
+                  <div className="flex flex-col gap-3 order-last md:order-first">
+                    {demoSteps.map((step, idx) => {
+                      const active = idx === activeStep;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          aria-expanded={active}
+                          onClick={() => setActiveStep(idx)}
+                          className={`relative overflow-hidden text-left rounded-2xl border transition-colors cursor-pointer ${
+                            active
+                              ? 'border-line bg-surface-2/80'
+                              : 'border-transparent bg-transparent hover:bg-surface-2/40'
+                          }`}
+                        >
+                          <div className="flex items-start gap-4 px-5 py-4">
+                            <span
+                              className={`shrink-0 w-9 h-9 rounded-full border flex items-center justify-center text-sm font-bold transition-colors ${
+                                active
+                                  ? 'border-transparent bg-gradient-to-br from-spottr to-ice text-black'
+                                  : 'border-line text-muted'
+                              }`}
+                            >
+                              {idx + 1}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2.5 flex-wrap">
+                                <span className={`font-display text-base md:text-lg font-bold tracking-tight ${active ? 'text-white' : 'text-muted'}`}>
+                                  {step.title}
+                                </span>
+                                {active && (
+                                  <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-md border ${accentChip(step.accent)}`}>
+                                    {step.tag}
+                                  </span>
+                                )}
+                              </div>
+                              <div
+                                className={`grid transition-[grid-template-rows] duration-500 ease-out ${
+                                  active ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                                }`}
                               >
-                                <span className={`w-1.5 h-1.5 rounded-full ${step.accent === 'spottr' ? 'bg-spottr' : 'bg-ice'}`}></span>
-                                {pt}
-                              </span>
-                            ))}
+                                <div className="overflow-hidden">
+                                  <p className="text-sm text-muted leading-relaxed mt-2 mb-4">{step.body}</p>
+                                  <div className="flex flex-wrap gap-2 pb-1">
+                                    {step.points.map((pt, i) => (
+                                      <span
+                                        key={i}
+                                        className="inline-flex items-center gap-1.5 text-xs font-medium text-fg bg-surface border border-line rounded-full px-3 py-1.5"
+                                      >
+                                        <span className={`w-1.5 h-1.5 rounded-full ${step.accent === 'spottr' ? 'bg-spottr' : 'bg-ice'}`}></span>
+                                        {pt}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
+
+                          {/* Auto-advance clock: when the bar fills, the demo moves on.
+                              Pausing the animation pauses the whole demo. */}
+                          {active && (
+                            <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-line/60">
+                              <span
+                                key={activeStep}
+                                onAnimationEnd={() => setActiveStep((p) => (p + 1) % demoSteps.length)}
+                                className="block h-full bg-gradient-to-r from-spottr to-ice animate-progress"
+                                style={{ animationPlayState: demoPaused ? 'paused' : 'running' }}
+                              />
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Phone showing the real screen for the active step */}
+                  <div className="justify-self-center order-first md:order-last">
+                    <div className="relative isolate">
+                      <div className="pointer-events-none absolute inset-0 -z-10 scale-110 rounded-full bg-spottr/10 blur-3xl" />
+                      <div className="w-[240px] md:w-[280px] rounded-[2.6rem] border border-line bg-surface p-2 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
+                        <div className="relative overflow-hidden rounded-[2.1rem] aspect-[720/1561]">
+                          {demoSteps.map((step, idx) => (
+                            <Image
+                              key={step.shot}
+                              src={step.shot}
+                              alt={step.shotAlt}
+                              fill
+                              sizes="280px"
+                              className={`object-cover transition-opacity duration-500 ${
+                                idx === activeStep ? 'opacity-100' : 'opacity-0'
+                              }`}
+                            />
+                          ))}
                         </div>
+                      </div>
+                      <p className="text-xs text-muted text-center mt-4 max-w-[280px] mx-auto" aria-live="polite">
+                        {demoSteps[activeStep].caption}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Honest differentiators — promises on the left, a real partner
+                floor on the right as the proof */}
+            <section className="max-w-6xl mx-auto px-6 pb-20">
+              <div className="grid lg:grid-cols-[1fr_420px] gap-4 lg:gap-6 items-stretch">
+                <div className="flex flex-col gap-4">
+                  {differentiators.map((d, i) => (
+                    <div key={i} className="flex-1 bg-surface border border-line rounded-xl p-6 flex gap-5 items-start">
+                      <div className="shrink-0 w-9 h-9 rounded-lg bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr">
+                        <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2.2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h4 className="text-base font-bold text-white mb-2">{d.title}</h4>
+                        <p className="text-sm text-muted leading-relaxed">{d.body}</p>
                       </div>
                     </div>
                   ))}
                 </div>
-
-                <button
-                  type="button"
-                  aria-label="Previous step"
-                  onClick={() => setActiveStep((p) => (p - 1 + steps.length) % steps.length)}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-base/70 border border-line text-white text-lg flex items-center justify-center hover:bg-base transition-colors cursor-pointer"
-                >
-                  ‹
-                </button>
-                <button
-                  type="button"
-                  aria-label="Next step"
-                  onClick={() => setActiveStep((p) => (p + 1) % steps.length)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-base/70 border border-line text-white text-lg flex items-center justify-center hover:bg-base transition-colors cursor-pointer"
-                >
-                  ›
-                </button>
-              </div>
-
-              <div className="flex justify-center gap-2 mt-6">
-                {steps.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    aria-label={`Go to step ${idx + 1}`}
-                    onClick={() => setActiveStep(idx)}
-                    className={`h-2 rounded-full transition-all cursor-pointer ${activeStep === idx ? 'w-8 bg-spottr' : 'w-2 bg-line hover:bg-muted'}`}
+                <div className="relative overflow-hidden rounded-xl border border-line min-h-[280px] shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+                  <Image
+                    src="/web/gym-floor.jpg"
+                    alt="Inside Raffa's Gym, a SPOTTR partner floor with racks, plates and dumbbells"
+                    fill
+                    sizes="(min-width: 1024px) 420px, 100vw"
+                    className="object-cover"
                   />
-                ))}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-5 pt-14 pb-4">
+                    <p className="text-sm font-semibold text-white">Raffa&apos;s Gym — a SPOTTR partner floor.</p>
+                    <p className="text-xs text-[#c9d1d9] mt-1">If it&apos;s not on this floor, it&apos;s not in the workout.</p>
+                  </div>
+                </div>
               </div>
             </section>
 
-            {/* Honest differentiators */}
-            <section className="max-w-5xl mx-auto px-6 pb-20">
-              <div className="grid md:grid-cols-3 gap-4">
-                {differentiators.map((d, i) => (
-                  <div key={i} className="bg-surface border border-line rounded-xl p-6">
-                    <div className="w-9 h-9 rounded-lg bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr mb-4">
-                      <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2.2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
-                      </svg>
-                    </div>
-                    <h4 className="text-base font-bold text-white mb-2">{d.title}</h4>
-                    <p className="text-sm text-muted leading-relaxed">{d.body}</p>
-                  </div>
-                ))}
+            {/* Full-bleed photo band — real weight room, real athletes.
+                `isolate` keeps the -z-10 photo above the page background. */}
+            <section className="relative isolate overflow-hidden">
+              <div className="absolute inset-0 -z-10">
+                <Image
+                  src="/web/hero-alt.jpg"
+                  alt="Athlete strapping in at the rack before a lift"
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-[center_30%]"
+                />
+                <div className="absolute inset-0 bg-base/45" />
+                <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-base to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-base to-transparent" />
               </div>
-            </section>
 
-            {/* See it in action */}
-            <section className="max-w-6xl mx-auto px-6 pb-24">
-              <div className="text-center mb-12">
-                <h2 className="text-xs tracking-widest text-ice uppercase mb-2">See it in action</h2>
-                <h3 className="text-2xl md:text-3xl font-bold text-white">Built like a coach, not a spreadsheet</h3>
-              </div>
-              <div className="grid sm:grid-cols-3 gap-8">
-                {shots.map((s, i) => (
-                  <div key={i} className="flex flex-col items-center text-center">
-                    <div className="rounded-[2rem] border border-line bg-surface p-2 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-                      <Image
-                        src={s.src}
-                        alt={s.title}
-                        width={300}
-                        height={650}
-                        className="rounded-[1.5rem] w-full h-auto"
-                      />
-                    </div>
-                    <h4 className="text-base font-bold text-white mt-6 mb-2">{s.title}</h4>
-                    <p className="text-sm text-muted leading-relaxed max-w-xs">{s.body}</p>
-                  </div>
-                ))}
+              <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
+                {/* Frosted panel so the copy stays readable over any part of
+                    the photo, including the bright areas. */}
+                <div className="inline-block max-w-2xl rounded-[2rem] bg-base/70 backdrop-blur-md border border-white/10 px-7 py-9 md:px-14 md:py-12 shadow-[0_30px_90px_rgba(0,0,0,0.45)]">
+                  <h2 className="text-xs tracking-widest text-ice uppercase mb-3">Built in the weight room</h2>
+                  <h3 className="text-3xl md:text-5xl font-extrabold text-white text-glow mb-5">Never lift alone.</h3>
+                  {/* No `text-base` here: the theme has a *color* named `base`,
+                      so `text-base` paints the text near-black instead of
+                      sizing it. 1rem is the default size anyway. */}
+                  <p className="md:text-lg text-[#c9d1d9] max-w-xl mx-auto mb-9 leading-relaxed">
+                    SPOTTR was built by athletes who got tired of apps that guess — a coach in your pocket for every
+                    session, not a spreadsheet.
+                  </p>
+                  <Link
+                    href="/get?src=site"
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    Get SPOTTR <span className="text-lg">→</span>
+                  </Link>
+                </div>
               </div>
             </section>
 
             {/* For gym owners — the B2B funnel into the partner portal */}
-            <section className="max-w-5xl mx-auto px-6 pb-24">
+            <section className="max-w-5xl mx-auto px-6 py-24">
               <div className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_30px_90px_rgba(0,0,0,.32)]">
                 <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-spottr/10 blur-3xl" />
                 <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-12 px-8 py-10 md:px-14 md:py-14">
@@ -358,7 +442,7 @@ export default function Home() {
                       every workout around your exact equipment — every rack, every machine, nothing they
                       can&apos;t find.
                     </p>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-8">
                       {['Free to apply', 'Print-ready branded poster', 'You control your equipment list'].map((pt) => (
                         <span
                           key={pt}
@@ -369,14 +453,27 @@ export default function Home() {
                         </span>
                       ))}
                     </div>
-                  </div>
-                  <div className="shrink-0">
                     <a
                       href="https://api.spottrfit.com/partner"
                       className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
                     >
                       Become a partner gym <span className="text-lg">→</span>
                     </a>
+                  </div>
+                  <div className="shrink-0 md:w-[300px]">
+                    <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                      <Image
+                        src="/web/qr-gym.jpg"
+                        alt="A SPOTTR scan-to-train QR placard standing on a windowsill at Raffa's Gym"
+                        width={1100}
+                        height={1375}
+                        sizes="(min-width: 768px) 300px, 100vw"
+                        className="object-cover w-full h-auto"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-4 pt-10 pb-3">
+                        <p className="text-xs text-[#c9d1d9]">Live at Raffa&apos;s Gym — placard Nº 011.</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -390,17 +487,47 @@ export default function Home() {
             <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">Why we built it</h2>
             <h3 className="text-3xl font-bold text-white mb-6">Most fitness apps either guess or charge a fortune.</h3>
 
-            <div className="space-y-6 text-muted text-base leading-relaxed max-w-2xl mb-16">
-              <p>
-                A great coach is expensive, and most fitness apps hand you a one-size-fits-all spreadsheet or a chatbot
-                that confidently makes things up. Neither knows your gym, your body, or your history — so neither can
-                actually coach you.
-              </p>
-              <p>
-                SPOTTR is the in-between we wanted ourselves: the structure and accountability of a real strength coach,
-                built on a science-backed engine that never invents exercises, never ignores an injury, and adapts to
-                you every time you train.
-              </p>
+            <div className="grid md:grid-cols-[1fr_300px] gap-10 items-start mb-16">
+              <div className="space-y-6 text-muted text-base leading-relaxed">
+                <p>
+                  A great coach is expensive, and most fitness apps hand you a one-size-fits-all spreadsheet or a chatbot
+                  that confidently makes things up. Neither knows your gym, your body, or your history — so neither can
+                  actually coach you.
+                </p>
+                <p>
+                  SPOTTR is the in-between we wanted ourselves: the structure and accountability of a real strength coach,
+                  built on a science-backed engine that never invents exercises, never ignores an injury, and adapts to
+                  you every time you train.
+                </p>
+              </div>
+              <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                <Image
+                  src="/web/founders.jpg"
+                  alt="Sam and Grayson Petros in the gym between sets"
+                  width={1109}
+                  height={1600}
+                  sizes="(min-width: 768px) 300px, 100vw"
+                  className="object-cover w-full h-auto"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-base/95 to-transparent px-4 pt-12 pb-3">
+                  <p className="text-xs text-muted">Sam (right) and Grayson (left) — SPOTTR came from the gym floor, not in a boardroom.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.4)] mb-16 h-56 md:h-72">
+              <Image
+                src="/web/gym-room.jpg"
+                alt="A partner home gym with racks, benches, cardio machines and a whiteboard of PRs"
+                fill
+                sizes="(min-width: 896px) 896px, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-5 pt-12 pb-4">
+                <p className="text-xs text-[#c9d1d9]">
+                  Real gyms aren&apos;t showrooms. SPOTTR is built for rooms like this one.
+                </p>
+              </div>
             </div>
 
             <div className="border-t border-line pt-12">
