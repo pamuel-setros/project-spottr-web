@@ -93,47 +93,34 @@ export default function Home() {
       ? 'text-spottr border-spottr/30 bg-spottr/10'
       : 'text-ice border-ice/30 bg-ice/10';
 
-  // The 5 features behind the "5 features, 1 app" headline.
+  // The 5 specs behind the headline — one tight line each, no overlap with
+  // the feature walkthrough above (that section tells the story; this one
+  // is the scannable spec sheet).
   const features = [
     {
-      title: 'Adaptive AI workout engine',
-      body: 'Programming built around your goal — strength, hypertrophy, or athleticism — your experience level, and a proven split like PPL or Upper/Lower. It orders every session around your equipment and injuries, so it never prescribes a lift you can’t actually do.',
+      title: 'Deterministic workout engine',
+      body: 'Goal-built programming — strength, hypertrophy, or athleticism — on a proven split like PPL or Upper/Lower. Rules-based exercise selection, locked to your equipment and injuries.',
       accent: 'spottr' as const,
     },
     {
       title: '"DietTech" nutrition suite',
-      body: 'Snap a photo and it’s logged — no manual entry. Personalized calorie and macro targets, a real-time dashboard for macros and hydration, a plate-quality score, and a weekly AI report with what to adjust.',
+      body: 'Photo logging, no manual entry. Personalized macro and hydration targets, a plate-quality score, a weekly AI report.',
       accent: 'ice' as const,
     },
     {
       title: 'Real-time coaching, every set',
-      body: 'Form and tempo cues while you lift, then a plain-language debrief the moment you rack the last set — what you did, what to fix, and what’s next.',
+      body: 'Live form and tempo cues. An instant debrief the second you rack the last set.',
       accent: 'spottr' as const,
     },
     {
       title: 'Apple Watch companion',
-      body: 'Train phone-free with your workout cached on your wrist. Real-time heart rate and calorie burn, plus set completion, load adjustments, and rest-timer control from the watch.',
+      body: 'Train phone-free. Live heart rate and calorie burn, plus full set control from your wrist.',
       accent: 'ice' as const,
     },
     {
       title: 'Progress that stays in view',
-      body: 'Streaks that account for recovery, not just gym visits. Live Activities, Dynamic Island, and home-screen widgets keep your session visible without opening the app.',
+      body: 'Recovery-aware streaks. Live Activities, Dynamic Island, and home-screen widgets.',
       accent: 'spottr' as const,
-    },
-  ];
-
-  const differentiators = [
-    {
-      title: "Won't invent equipment you don't have",
-      body: 'If it is not in your gym, it is not in your workout. Every movement is checked against what you actually have access to.',
-    },
-    {
-      title: "Won't push you through injuries",
-      body: 'Tell it where you are hurt and it trains around it — swapping or skipping anything that loads the wrong thing.',
-    },
-    {
-      title: 'Re-adapts every single session',
-      body: 'It learns from how the last workout went and adjusts the next one. Your plan is never frozen.',
     },
   ];
 
@@ -257,11 +244,12 @@ export default function Home() {
               </div>
             </section>
 
-            {/* 5 features, 1 app — the headline's promise, spelled out */}
+            {/* The specs — scannable reference grid, deliberately short-form
+                so it doesn't retell the story the feature walkthrough below already tells */}
             <section className="max-w-6xl mx-auto px-6 pt-4 pb-20 animate-fade">
               <div className="text-center mb-10">
-                <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">Everything in one app</h2>
-                <h3 className="text-2xl md:text-3xl font-bold text-white">5 features. 1 app.</h3>
+                <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">The specs</h2>
+                <h3 className="text-2xl md:text-3xl font-bold text-white">Everything packed into one app.</h3>
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -288,10 +276,61 @@ export default function Home() {
               </div>
             </section>
 
-            {/* How it works — interactive demo driven by real app screens */}
+            {/* Engine vs AI — the "not a wrapper" claim, made concrete instead
+                of just asserted: which parts are rules, which parts are the LLM */}
+            <section className="max-w-6xl mx-auto px-6 pb-20">
+              <div className="text-center mb-10">
+                <h2 className="text-xs tracking-widest text-ice uppercase mb-2">Not a chatbot</h2>
+                <h3 className="text-2xl md:text-3xl font-bold text-white">A real engine, not an AI wrapper.</h3>
+                <p className="text-sm text-muted mt-3 max-w-lg mx-auto">
+                  Most &quot;AI fitness apps&quot; are a chatbot with a system prompt. SPOTTR&apos;s programming runs on
+                  deterministic rules over 370+ tagged exercises — the AI&apos;s job is to explain it, not decide it.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-surface border border-line rounded-xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="shrink-0 w-9 h-9 rounded-lg bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr">
+                      <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
+                        <rect x="8" y="8" width="8" height="8" rx="1" strokeLinecap="round" strokeLinejoin="round" />
+                        <path
+                          strokeLinecap="round"
+                          d="M9 3v2M15 3v2M9 19v2M15 19v2M3 9h2M3 15h2M19 9h2M19 15h2"
+                        />
+                      </svg>
+                    </div>
+                    <h4 className="text-base font-bold text-white">The engine decides</h4>
+                  </div>
+                  <ul className="space-y-2.5 text-sm text-muted leading-relaxed">
+                    <li>Every exercise — filtered by explicit equipment and injury rules, not a language model&apos;s best guess</li>
+                    <li>Your sets, reps, and load — real progression math: RPE autoregulation, load increments, deload triggers</li>
+                    <li>A tagged database of 370+ movements, resolved by boolean logic, the same way every session</li>
+                  </ul>
+                </div>
+
+                <div className="bg-surface border border-line rounded-xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="shrink-0 w-9 h-9 rounded-lg bg-ice/10 border border-ice/20 flex items-center justify-center text-ice">
+                      <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z" />
+                      </svg>
+                    </div>
+                    <h4 className="text-base font-bold text-white">The AI explains</h4>
+                  </div>
+                  <ul className="space-y-2.5 text-sm text-muted leading-relaxed">
+                    <li>Why this exercise, in plain English — grounded in the engine&apos;s real numbers, never invented physiology</li>
+                    <li>Your meal photos, read and turned into calories and macros</li>
+                    <li>Your post-workout debrief, written in plain language over what the engine actually tracked</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            {/* The features — interactive demo driven by real app screens */}
             <section className="max-w-6xl mx-auto px-6 pt-16 pb-20 animate-fade">
               <div className="text-center mb-10">
-                <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">How it works</h2>
+                <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">The features</h2>
                 <h3 className="text-2xl md:text-3xl font-bold text-white">One loop, every session</h3>
                 <p className="text-sm text-muted mt-3 max-w-md mx-auto">
                   These are real screens from the app — click through the loop.
@@ -415,37 +454,22 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Honest differentiators — promises on the left, a real partner
-                floor on the right as the proof */}
+            {/* Proof, not another promise — the specs/features above already
+                cover equipment- and injury-awareness, so this is just the
+                receipt: a real partner gym floor. */}
             <section className="max-w-6xl mx-auto px-6 pb-20">
-              <div className="grid lg:grid-cols-[1fr_420px] gap-4 lg:gap-6 items-stretch">
-                <div className="flex flex-col gap-4">
-                  {differentiators.map((d, i) => (
-                    <div key={i} className="flex-1 bg-surface border border-line rounded-xl p-6 flex gap-5 items-start">
-                      <div className="shrink-0 w-9 h-9 rounded-lg bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr">
-                        <svg className="w-5 h-5 stroke-current fill-none" strokeWidth="2.2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M20 6L9 17l-5-5" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h4 className="text-base font-bold text-white mb-2">{d.title}</h4>
-                        <p className="text-sm text-muted leading-relaxed">{d.body}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="relative overflow-hidden rounded-xl border border-line min-h-[280px] shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
-                  <Image
-                    src="/web/gym-floor.jpg"
-                    alt="Inside Raffa's Gym, a SPOTTR partner floor with racks, plates and dumbbells"
-                    fill
-                    sizes="(min-width: 1024px) 420px, 100vw"
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-5 pt-14 pb-4">
-                    <p className="text-sm font-semibold text-white">Raffa&apos;s Gym — a SPOTTR partner floor.</p>
-                    <p className="text-xs text-[#c9d1d9] mt-1">If it&apos;s not on this floor, it&apos;s not in the workout.</p>
-                  </div>
+              <div className="relative overflow-hidden rounded-2xl border border-line min-h-[240px] shadow-[0_20px_60px_rgba(0,0,0,0.4)] flex items-end">
+                <Image
+                  src="/web/gym-floor.jpg"
+                  alt="Inside Raffa's Gym, a SPOTTR partner floor with racks, plates and dumbbells"
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                <div className="relative px-6 py-6 md:px-10 md:py-8">
+                  <p className="text-sm font-semibold text-white">Raffa&apos;s Gym — a real SPOTTR partner floor.</p>
+                  <p className="text-xs text-[#c9d1d9] mt-1">If it&apos;s not on this floor, it&apos;s not in the workout.</p>
                 </div>
               </div>
             </section>
