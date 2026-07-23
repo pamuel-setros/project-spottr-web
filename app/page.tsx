@@ -60,28 +60,28 @@ export default function Home() {
   // is the scannable spec sheet).
   const features = [
     {
-      title: 'Deterministic workout engine',
-      body: 'Goal-built programming — strength, hypertrophy, or athleticism — on a proven split like PPL or Upper/Lower. Rules-based exercise selection, locked to your equipment and injuries.',
+      title: 'Hybrid engine: rules + AI',
+      body: 'Deterministic rules build your program — exercise selection, sets, reps, and progression math. Gemini and Groq explain it in plain English. The engine decides, the AI never does.',
       accent: 'spottr' as const,
     },
     {
-      title: '"DietTech" nutrition suite',
-      body: 'Photo logging, no manual entry. Personalized macro and hydration targets, a plate-quality score, a weekly AI report.',
+      title: 'Advanced personal workout logger',
+      body: 'Log every set in seconds, with live form and tempo cues while you lift and a debrief the moment you rack the last set.',
       accent: 'ice' as const,
     },
     {
-      title: 'Real-time coaching, every set',
-      body: 'Live form and tempo cues. An instant debrief the second you rack the last set.',
+      title: 'Personal calorie tracker & dietician',
+      body: 'DietTech logs meals from a photo — no manual entry — with personalized calorie and macro targets, a plate-quality score, and a weekly AI report.',
       accent: 'spottr' as const,
     },
     {
-      title: 'Apple Watch companion',
-      body: 'Train phone-free. Live heart rate and calorie burn, plus full set control from your wrist.',
+      title: 'HealthKit & biometrics integration',
+      body: 'Live heart rate, calories, and workout data synced through Apple Health, plus a full Watch companion for phone-free training.',
       accent: 'ice' as const,
     },
     {
-      title: 'Progress that stays in view',
-      body: 'Recovery-aware streaks. Live Activities, Dynamic Island, and home-screen widgets.',
+      title: 'Real gym integration',
+      body: 'Scan your gym’s QR code and get every workout built around its exact equipment — every rack, every machine, real inventory, not a guess.',
       accent: 'spottr' as const,
     },
   ];
@@ -211,6 +211,15 @@ export default function Home() {
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Teaser, not a 6th spec — keeps the hero's "5 features, 1 app"
+                  math honest while still showing the roadmap is alive. */}
+              <div className="mt-6 flex justify-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface/70 border border-line text-xs font-medium text-muted">
+                  <span className="w-1.5 h-1.5 rounded-full bg-ice"></span>
+                  More on the way — AI form grader <span className="text-fg font-semibold">(soon)</span>
+                </div>
               </div>
             </section>
 
