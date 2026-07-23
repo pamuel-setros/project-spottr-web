@@ -1,57 +1,19 @@
 // app/page.tsx
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-type Tab = 'home' | 'about' | 'community' | 'waitlist';
+type Tab = 'home' | 'about' | 'community';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>('home');
-
-  // Waitlist form state
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<{ type: 'idle' | 'loading' | 'success' | 'error'; message: string }>({
-    type: 'idle',
-    message: '',
-  });
-
-  // Live waitlist counter — honest real Supabase count (no inflation).
-  const WAITLIST_SEED = 0;
-  // Only show the number once it's actually impressive; below this we lean on
-  // "founding access" exclusivity instead of a weak count.
-  const WAITLIST_THRESHOLD = 250;
-  const [waitlistCount, setWaitlistCount] = useState<number>(WAITLIST_SEED);
 
   // Interactive product demo: which step is active, and whether auto-advance
   // is paused (hover/focus = the user is reading, so stop the clock).
   const [activeStep, setActiveStep] = useState<number>(0);
   const [demoPaused, setDemoPaused] = useState<boolean>(false);
-
-  const refreshCount = useCallback(async () => {
-    try {
-      const response = await fetch('/api/waitlist', {
-        method: 'GET',
-        cache: 'no-store',
-        headers: { Pragma: 'no-cache' },
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      if (typeof data.count === 'number') {
-        setWaitlistCount(WAITLIST_SEED + data.count);
-      }
-    } catch (error) {
-      console.error('Failed to refresh waitlist count:', error);
-    }
-  }, []);
-
-  // Covers initial mount too — activeTab starts on 'home'.
-  useEffect(() => {
-    if (activeTab === 'waitlist' || activeTab === 'home') {
-      void refreshCount();
-    }
-  }, [activeTab, refreshCount]);
 
   // Each step is backed by a real screenshot from the app — the demo walks
   // through an actual session loop: plan → train & debrief → recover.
@@ -124,34 +86,6 @@ export default function Home() {
     },
   ];
 
-  const handleWaitlistSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setStatus({ type: 'loading', message: 'Joining…' });
-
-    try {
-      const response = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        setStatus({ type: 'error', message: data.error || 'Something went wrong.' });
-      } else {
-        setStatus({ type: 'success', message: data.message || "You're on the list!" });
-        setEmail('');
-        setWaitlistCount((prev) => prev + 1);
-        setTimeout(() => refreshCount(), 500);
-      }
-    } catch (err) {
-      console.error('Network error:', err);
-      setStatus({ type: 'error', message: 'Could not reach the server. Please try again.' });
-    }
-  };
-
   return (
     <div className="relative flex flex-col min-h-screen justify-between bg-base text-fg overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -162,7 +96,11 @@ export default function Home() {
       {/* Navigation */}
       <header className="border-b border-line bg-surface/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-          <div className="flex items-center gap-2.5 cursor-pointer select-none" onClick={() => setActiveTab('home')}>
+          <button
+            type="button"
+            onClick={() => setActiveTab('home')}
+            className="flex items-center gap-2.5 select-none rounded-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+          >
             <Image src="/web/mark.png" alt="SPOTTR" width={30} height={30} loading="eager" className="rounded-lg" />
             <Image
               src="/spottr_text.png"
@@ -172,7 +110,7 @@ export default function Home() {
               loading="eager"
               className="object-contain w-auto h-auto"
             />
-          </div>
+          </button>
 
           <nav className="flex items-center space-x-1 text-sm">
             {([
@@ -184,7 +122,7 @@ export default function Home() {
                 key={tab}
                 type="button"
                 onClick={() => setActiveTab(tab)}
-                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base ${
                   activeTab === tab ? 'bg-line text-white font-semibold' : 'text-muted hover:text-white'
                 }`}
               >
@@ -195,7 +133,7 @@ export default function Home() {
 
           <Link
             href="/get?src=site"
-            className="hidden sm:block rounded-full bg-gradient-to-r from-spottr to-ice px-4 py-2 text-sm font-semibold text-black shadow-[0_10px_40px_rgba(52,208,88,0.18)] transition-transform duration-300 hover:-translate-y-0.5 cursor-pointer"
+            className="w-full sm:w-auto text-center rounded-full bg-spottr px-4 py-2 text-sm font-semibold text-black transition-colors hover:bg-spottr-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base cursor-pointer"
           >
             Get SPOTTR
           </Link>
@@ -236,7 +174,7 @@ export default function Home() {
                   </p>
                   <Link
                     href="/get?src=site"
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_14px_36px_rgba(52,208,88,0.25)] transition-transform duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
                   >
                     Get SPOTTR <span className="text-lg">→</span>
                   </Link>
@@ -338,7 +276,7 @@ export default function Home() {
               </div>
 
               <div
-                className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_30px_90px_rgba(0,0,0,.32)]"
+                className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_16px_40px_rgba(0,0,0,0.3)]"
                 onMouseEnter={() => setDemoPaused(true)}
                 onMouseLeave={() => setDemoPaused(false)}
                 onFocusCapture={() => setDemoPaused(true)}
@@ -358,7 +296,7 @@ export default function Home() {
                           type="button"
                           aria-expanded={active}
                           onClick={() => setActiveStep(idx)}
-                          className={`relative overflow-hidden text-left rounded-2xl border transition-colors cursor-pointer ${
+                          className={`relative overflow-hidden text-left rounded-2xl border transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base ${
                             active
                               ? 'border-line bg-surface-2/80'
                               : 'border-transparent bg-transparent hover:bg-surface-2/40'
@@ -368,7 +306,7 @@ export default function Home() {
                             <span
                               className={`shrink-0 w-9 h-9 rounded-full border flex items-center justify-center text-sm font-bold transition-colors ${
                                 active
-                                  ? 'border-transparent bg-gradient-to-br from-spottr to-ice text-black'
+                                  ? `border-transparent text-black ${step.accent === 'spottr' ? 'bg-spottr' : 'bg-ice'}`
                                   : 'border-line text-muted'
                               }`}
                             >
@@ -380,7 +318,7 @@ export default function Home() {
                                   {step.title}
                                 </span>
                                 {active && (
-                                  <span className={`inline-block text-[10px] font-medium px-2 py-0.5 rounded-md border ${accentChip(step.accent)}`}>
+                                  <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-md border ${accentChip(step.accent)}`}>
                                     {step.tag}
                                   </span>
                                 )}
@@ -415,7 +353,7 @@ export default function Home() {
                               <span
                                 key={activeStep}
                                 onAnimationEnd={() => setActiveStep((p) => (p + 1) % demoSteps.length)}
-                                className="block h-full bg-gradient-to-r from-spottr to-ice animate-progress"
+                                className={`block h-full animate-progress ${step.accent === 'spottr' ? 'bg-spottr' : 'bg-ice'}`}
                                 style={{ animationPlayState: demoPaused ? 'paused' : 'running' }}
                               />
                             </span>
@@ -429,7 +367,7 @@ export default function Home() {
                   <div className="justify-self-center order-first md:order-last">
                     <div className="relative isolate">
                       <div className="pointer-events-none absolute inset-0 -z-10 scale-110 rounded-full bg-spottr/10 blur-3xl" />
-                      <div className="w-[240px] md:w-[280px] rounded-[2.6rem] border border-line bg-surface p-2 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
+                      <div className="w-[240px] md:w-[280px] rounded-[2.6rem] border border-line bg-surface p-2 shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
                         <div className="relative overflow-hidden rounded-[2.1rem] aspect-[720/1561]">
                           {demoSteps.map((step, idx) => (
                             <Image
@@ -458,7 +396,7 @@ export default function Home() {
                 cover equipment- and injury-awareness, so this is just the
                 receipt: a real partner gym floor. */}
             <section className="max-w-6xl mx-auto px-6 pb-20">
-              <div className="relative overflow-hidden rounded-2xl border border-line min-h-[240px] shadow-[0_20px_60px_rgba(0,0,0,0.4)] flex items-end">
+              <div className="relative overflow-hidden rounded-2xl border border-line min-h-[240px] shadow-[0_12px_32px_rgba(0,0,0,0.3)] flex items-end">
                 <Image
                   src="/web/gym-floor.jpg"
                   alt="Inside Raffa's Gym, a SPOTTR partner floor with racks, plates and dumbbells"
@@ -474,48 +412,12 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Full-bleed photo band — real weight room, real athletes.
-                `isolate` keeps the -z-10 photo above the page background. */}
-            <section className="relative isolate overflow-hidden">
-              <div className="absolute inset-0 -z-10">
-                <Image
-                  src="/web/hero-alt.jpg"
-                  alt="Athlete strapping in at the rack before a lift"
-                  fill
-                  sizes="100vw"
-                  className="object-cover object-[center_30%]"
-                />
-                <div className="absolute inset-0 bg-base/45" />
-                <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-base to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-base to-transparent" />
-              </div>
-
-              <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
-                {/* Frosted panel so the copy stays readable over any part of
-                    the photo, including the bright areas. */}
-                <div className="inline-block max-w-2xl rounded-[2rem] bg-base/70 backdrop-blur-md border border-white/10 px-7 py-9 md:px-14 md:py-12 shadow-[0_30px_90px_rgba(0,0,0,0.45)]">
-                  <h2 className="text-xs tracking-widest text-ice uppercase mb-3">Built in the weight room</h2>
-                  <h3 className="text-3xl md:text-5xl font-extrabold text-white text-glow mb-5">Never lift alone.</h3>
-                  {/* No `text-base` here: the theme has a *color* named `base`,
-                      so `text-base` paints the text near-black instead of
-                      sizing it. 1rem is the default size anyway. */}
-                  <p className="md:text-lg text-[#c9d1d9] max-w-xl mx-auto mb-9 leading-relaxed">
-                    SPOTTR was built by athletes who got tired of apps that guess — a coach in your pocket for every
-                    session, not a spreadsheet.
-                  </p>
-                  <Link
-                    href="/get?src=site"
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
-                  >
-                    Get SPOTTR <span className="text-lg">→</span>
-                  </Link>
-                </div>
-              </div>
-            </section>
-
-            {/* For gym owners — the B2B funnel into the partner portal */}
+            {/* For gym owners — the B2B funnel into the partner portal.
+                Placed before the closing "Never lift alone" band so the page's
+                last impression is the individual-lifter emotional peak, not a
+                B2B pitch. */}
             <section className="max-w-5xl mx-auto px-6 py-24">
-              <div className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_30px_90px_rgba(0,0,0,.32)]">
+              <div className="relative overflow-hidden rounded-[2rem] premium-card shadow-[0_16px_40px_rgba(0,0,0,0.3)]">
                 <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-spottr/10 blur-3xl" />
                 <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-12 px-8 py-10 md:px-14 md:py-14">
                   <div className="flex-1">
@@ -539,13 +441,13 @@ export default function Home() {
                     </div>
                     <a
                       href="https://api.spottrfit.com/partner"
-                      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+                      className="inline-flex items-center gap-2 rounded-full bg-spottr px-8 py-3.5 text-base font-semibold text-black transition-colors hover:bg-spottr-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
                     >
                       Become a partner gym <span className="text-lg">→</span>
                     </a>
                   </div>
                   <div className="shrink-0 md:w-[300px]">
-                    <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+                    <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_12px_32px_rgba(0,0,0,0.32)]">
                       <Image
                         src="/web/qr-gym.jpg"
                         alt="A SPOTTR scan-to-train QR placard standing on a windowsill at Raffa's Gym"
@@ -559,6 +461,46 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Full-bleed photo band — real weight room, real athletes. Closes
+                the page on the emotional peak, not the B2B pitch above.
+                `isolate` keeps the -z-10 photo above the page background. */}
+            <section className="relative isolate overflow-hidden">
+              <div className="absolute inset-0 -z-10">
+                <Image
+                  src="/web/hero-alt.jpg"
+                  alt="Athlete strapping in at the rack before a lift"
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-[center_30%]"
+                />
+                <div className="absolute inset-0 bg-base/45" />
+                <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-base to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-base to-transparent" />
+              </div>
+
+              <div className="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
+                {/* Frosted panel so the copy stays readable over any part of
+                    the photo, including the bright areas. */}
+                <div className="inline-block max-w-2xl rounded-[2rem] bg-base/70 backdrop-blur-md border border-white/10 px-7 py-9 md:px-14 md:py-12 shadow-[0_16px_40px_rgba(0,0,0,0.35)]">
+                  <h2 className="text-xs tracking-widest text-ice uppercase mb-3">Built in the weight room</h2>
+                  <h3 className="text-3xl md:text-5xl font-extrabold text-white mb-5">Never lift alone.</h3>
+                  {/* No `text-base` here: the theme has a *color* named `base`,
+                      so `text-base` paints the text near-black instead of
+                      sizing it. 1rem is the default size anyway. */}
+                  <p className="md:text-lg text-[#c9d1d9] max-w-xl mx-auto mb-9 leading-relaxed">
+                    SPOTTR was built by athletes who got tired of apps that guess — a coach in your pocket for every
+                    session, not a spreadsheet.
+                  </p>
+                  <Link
+                    href="/get?src=site"
+                    className="inline-flex items-center gap-2 rounded-full bg-spottr px-8 py-3.5 text-base font-semibold text-black transition-colors hover:bg-spottr-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+                  >
+                    Get SPOTTR <span className="text-lg">→</span>
+                  </Link>
                 </div>
               </div>
             </section>
@@ -584,7 +526,7 @@ export default function Home() {
                   you every time you train.
                 </p>
               </div>
-              <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.45)]">
+              <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_12px_32px_rgba(0,0,0,0.32)]">
                 <Image
                   src="/web/founders.jpg"
                   alt="Sam and Grayson Petros in the gym between sets"
@@ -599,7 +541,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_20px_60px_rgba(0,0,0,0.4)] mb-16 h-56 md:h-72">
+            <div className="relative overflow-hidden rounded-2xl border border-line shadow-[0_12px_32px_rgba(0,0,0,0.3)] mb-16 h-56 md:h-72">
               <Image
                 src="/web/gym-room.jpg"
                 alt="A partner home gym with racks, benches, cardio machines and a whiteboard of PRs"
@@ -622,7 +564,7 @@ export default function Home() {
                   <div>
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <h4 className="text-xl font-bold text-white">Samuel Petros</h4>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-spottr border border-spottr/30 bg-spottr/10 rounded-full px-2 py-0.5">
+                      <span className="text-xs font-bold uppercase tracking-wider text-spottr border border-spottr/30 bg-spottr/10 rounded-full px-2 py-0.5">
                         D1 Athlete
                       </span>
                     </div>
@@ -638,7 +580,7 @@ export default function Home() {
                     href="https://www.linkedin.com/in/samuel-petros/"
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center text-sm font-semibold text-ice hover:text-white cursor-pointer transition-colors mt-auto"
+                    className="inline-flex items-center text-sm font-semibold text-ice hover:text-white cursor-pointer transition-colors mt-auto rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                   >
                     More about Sam <span className="ml-1.5 transition-transform group-hover:translate-x-1">→</span>
                   </a>
@@ -674,7 +616,7 @@ export default function Home() {
                 href="https://discord.gg/zmJJHY5mv7"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-ice/50 transition-all cursor-pointer shadow-md"
+                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-ice/50 transition-all cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 rounded-md bg-ice/10 border border-ice/20 flex items-center justify-center text-ice">
@@ -694,7 +636,7 @@ export default function Home() {
                 href="https://www.instagram.com/spottrfitness.app/?utm_source=ig_web_button_share_sheet"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-spottr/50 transition-all cursor-pointer shadow-md"
+                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-spottr/50 transition-all cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-spottr focus-visible:ring-offset-2 focus-visible:ring-offset-base"
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 rounded-md bg-spottr/10 border border-spottr/20 flex items-center justify-center text-spottr">
@@ -714,7 +656,7 @@ export default function Home() {
                 href="https://www.tiktok.com/@spottrfit"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-ice/50 transition-all cursor-pointer shadow-md"
+                className="group flex items-center justify-between p-4 bg-surface border border-line rounded-lg hover:border-ice/50 transition-all cursor-pointer shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 rounded-md bg-ice/10 border border-ice/20 flex items-center justify-center text-ice">
@@ -732,66 +674,6 @@ export default function Home() {
             </div>
           </section>
         )}
-
-        {/* WAITLIST */}
-        {activeTab === 'waitlist' && (
-          <section className="max-w-3xl mx-auto px-6 py-24 text-center animate-fade">
-            <h2 className="text-xs tracking-widest text-spottr uppercase mb-2">Early access</h2>
-            <h3 className="text-3xl font-bold text-white mb-6">Be first in line</h3>
-            <p className="text-base text-muted max-w-xl mx-auto mb-10 leading-relaxed">
-              Drop your email and we&apos;ll let you know the moment SPOTTR opens up. No spam — just the invite.
-            </p>
-
-            <form
-              onSubmit={handleWaitlistSubmit}
-              className="max-w-md mx-auto p-2 sm:p-1 bg-surface border border-line rounded-lg flex flex-col sm:flex-row items-center shadow-xl gap-2 sm:gap-0"
-            >
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={status.type === 'loading'}
-                placeholder="you@email.com"
-                className="bg-transparent text-white px-4 py-3 w-full focus:outline-none text-sm placeholder-muted disabled:opacity-50 text-center sm:text-left"
-                required
-              />
-              <button
-                type="submit"
-                disabled={status.type === 'loading'}
-                className="bg-spottr hover:bg-spottr-deep disabled:opacity-50 whitespace-nowrap text-black font-semibold text-sm px-6 py-3 sm:py-2.5 rounded-md transition-colors w-full sm:w-auto sm:mr-1 cursor-pointer"
-              >
-                {status.type === 'loading' ? 'Joining…' : 'Join'}
-              </button>
-            </form>
-
-            {status.message && (
-              <p className={`text-xs mt-4 font-medium ${status.type === 'error' ? 'text-[#ff7b72]' : 'text-spottr'}`}>
-                {status.message}
-              </p>
-            )}
-
-            {waitlistCount >= WAITLIST_THRESHOLD ? (
-              <div className="mt-10 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm text-muted bg-surface/80 border border-line max-w-full w-fit mx-auto px-4 py-2.5 rounded-full shadow-md select-none">
-                <div className="flex -space-x-2">
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-spottr to-spottr-deep border-2 border-surface"></div>
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-ice to-ice-deep border-2 border-surface"></div>
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-spottr to-ice border-2 border-surface"></div>
-                </div>
-                <span>
-                  Join <span className="text-white font-bold tracking-wide">{waitlistCount.toLocaleString()}</span>{' '}
-                  lifters on the early-access list
-                </span>
-              </div>
-            ) : (
-              <div className="mt-10 flex items-center justify-center gap-2.5 text-xs sm:text-sm text-muted bg-surface/80 border border-line max-w-full w-fit mx-auto px-4 py-2.5 rounded-full shadow-md select-none">
-                <span className="w-2 h-2 rounded-full bg-spottr animate-pulse"></span>
-                <span>
-                  <span className="text-white font-bold">Founding access</span> — get in before we open to everyone
-                </span>
-              </div>
-            )}
-          </section>
-        )}
       </main>
 
       {/* Footer */}
@@ -799,15 +681,26 @@ export default function Home() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
           <p>© 2026 SPOTTR · Never lift alone.</p>
           <div className="flex space-x-6">
-            <a href="https://api.spottrfit.com/partner" className="hover:text-white">
+            <a
+              href="https://api.spottrfit.com/partner"
+              className="hover:text-white rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+            >
               Gym Partners
             </a>
-            <span className="hover:text-white cursor-pointer" onClick={() => setActiveTab('community')}>
+            <button
+              type="button"
+              className="hover:text-white cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+              onClick={() => setActiveTab('community')}
+            >
               Community
-            </span>
-            <span className="hover:text-white cursor-pointer" onClick={() => setActiveTab('about')}>
+            </button>
+            <button
+              type="button"
+              className="hover:text-white cursor-pointer rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+              onClick={() => setActiveTab('about')}
+            >
               About
-            </span>
+            </button>
           </div>
         </div>
       </footer>

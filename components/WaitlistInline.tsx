@@ -42,13 +42,13 @@ export default function WaitlistInline() {
           onChange={(e) => setEmail(e.target.value)}
           disabled={status.type === 'loading'}
           placeholder="you@email.com"
-          className="bg-transparent text-white px-4 py-3 w-full focus:outline-none text-sm placeholder-muted disabled:opacity-50 text-center sm:text-left"
+          className="bg-transparent text-white px-4 py-3 w-full text-sm placeholder-muted disabled:opacity-50 text-center sm:text-left rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice"
           required
         />
         <button
           type="submit"
           disabled={status.type === 'loading'}
-          className="bg-spottr hover:bg-spottr-deep disabled:opacity-50 whitespace-nowrap text-black font-semibold text-sm px-6 py-3 sm:py-2.5 rounded-md transition-colors w-full sm:w-auto sm:mr-1 cursor-pointer"
+          className="bg-spottr hover:bg-spottr-deep disabled:opacity-50 whitespace-nowrap text-black font-semibold text-sm px-6 py-3 sm:py-2.5 rounded-md transition-colors w-full sm:w-auto sm:mr-1 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
         >
           {status.type === 'loading' ? 'Joining…' : 'Notify me'}
         </button>

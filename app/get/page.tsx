@@ -69,11 +69,17 @@ export default async function GetPage({
 
       <header className="border-b border-line bg-surface/80 backdrop-blur-md px-4 sm:px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 select-none">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 select-none rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+          >
             <Image src="/web/mark.png" alt="SPOTTR" width={30} height={30} priority className="rounded-lg" />
             <Image src="/spottr_text.png" alt="SPOTTR" width={108} height={25} priority className="object-contain w-auto h-auto" />
           </Link>
-          <Link href="/" className="text-sm text-muted hover:text-white transition-colors">
+          <Link
+            href="/"
+            className="text-sm text-muted hover:text-white transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+          >
             What is SPOTTR?
           </Link>
         </div>
@@ -100,7 +106,7 @@ export default async function GetPage({
             <>
               <a
                 href={DOWNLOAD_URL!}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-10 py-4 text-lg font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-10 py-4 text-lg font-semibold text-black shadow-[0_14px_36px_rgba(52,208,88,0.25)] transition-transform duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
               >
                 {IS_BETA ? 'Download the beta' : 'Download SPOTTR'} <span className="text-xl">→</span>
               </a>
