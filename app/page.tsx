@@ -156,8 +156,8 @@ export default function Home() {
               </div>
 
               <div className="max-w-6xl mx-auto px-6 pt-28 pb-28 md:pt-36 md:pb-36">
-                <div className="max-w-2xl">
-                  <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.05]">
+                <div className="max-w-3xl">
+                  <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-[1.05]">
                     Programmed for the gym you <span className="text-spottr">actually</span> train in.
                   </h1>
                   <p className="text-lg md:text-xl text-[#c9d1d9] max-w-xl mb-10 leading-relaxed">

@@ -93,7 +93,7 @@ export default async function GymPage({
             {gym.verified ? 'Verified SPOTTR partner gym' : 'SPOTTR partner gym'}
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3 leading-[1.08]">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-3 leading-[1.08]">
             Train at <span className="text-spottr">{gym.name}</span>
           </h1>
           {gym.city && <p className="text-sm text-muted mb-2">{gym.city}</p>}

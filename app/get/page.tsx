@@ -82,7 +82,7 @@ export default async function GetPage({
 
       <main className="flex-grow flex items-center justify-center px-6 py-16">
         <div className="max-w-xl w-full text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-6 leading-[1.08]">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-[1.08]">
             Never lift <span className="text-spottr">alone</span> again.
           </h1>
 

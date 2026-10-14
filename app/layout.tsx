@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Sora } from "next/font/google";
+import { Archivo, Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -9,9 +9,12 @@ const inter = Inter({
   display: "swap",
 });
 
-const sora = Sora({
+// Display face. Variable on weight AND width: headings use the condensed end
+// of the wdth axis (font-stretch in globals.css), so load that axis too.
+const archivo = Archivo({
   subsets: ["latin"],
-  variable: "--font-sora",
+  axes: ["wdth"],
+  variable: "--font-archivo",
   display: "swap",
 });
 
@@ -45,7 +48,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${sora.variable} scroll-smooth`}>
+    <html lang="en" className={`${inter.variable} ${archivo.variable} scroll-smooth`}>
       <body className="bg-base text-fg font-sans antialiased min-h-screen selection:bg-spottr selection:text-black overflow-x-hidden">
         {children}
         <Analytics />
