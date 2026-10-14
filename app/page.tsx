@@ -161,8 +161,8 @@ export default function Home() {
                     Programmed for the gym you <span className="text-spottr">actually</span> train in.
                   </h1>
                   <p className="text-lg md:text-xl text-[#c9d1d9] max-w-xl mb-10 leading-relaxed">
-                    SPOTTR builds every session around your goal, your equipment, and any injuries. It coaches you
-                    set by set, then tells you what to fix and what comes next.
+                    SPOTTR builds every session around your goal, your equipment, and any injuries. It tracks every
+                    set as you lift, then tells you what to fix and what comes next.
                   </p>
                   <Link
                     href="/get?src=site"

@@ -22,11 +22,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://spottrfit.com"),
   title: "SPOTTR | Programmed for the gym you actually train in",
   description:
-    "An AI lifting coach that builds every session around your gym, your body, and your injuries, then coaches you through it set by set.",
+    "An AI lifting coach that builds every session around your gym, your body, and your injuries, then tracks every set and debriefs you after.",
   openGraph: {
     title: "SPOTTR | Programmed for the gym you actually train in",
     description:
-      "An AI lifting coach that builds every session around your gym, your body, and your injuries, then coaches you through it set by set.",
+      "An AI lifting coach that builds every session around your gym, your body, and your injuries, then tracks every set and debriefs you after.",
     url: "https://spottrfit.com",
     siteName: "SPOTTR",
     images: [
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SPOTTR | Programmed for the gym you actually train in",
     description:
-      "An AI lifting coach that builds every session around your gym, your body, and your injuries, then coaches you through it set by set.",
+      "An AI lifting coach that builds every session around your gym, your body, and your injuries, then tracks every set and debriefs you after.",
     images: ["/opengraph-image.png"],
   },
 };

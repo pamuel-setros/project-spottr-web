@@ -24,7 +24,7 @@ const SRC_RX = /^[a-z0-9-]{1,64}$/;
 export const metadata: Metadata = {
   title: 'Get SPOTTR | Your AI lifting coach',
   description:
-    'SPOTTR builds every session around your goal, your equipment, and any injuries, then coaches you through it set by set.',
+    'SPOTTR builds every session around your goal, your equipment, and any injuries, then tracks every set and debriefs you after.',
 };
 
 function detectPlatform(ua: string): 'ios' | 'android' | 'desktop' {
@@ -87,8 +87,8 @@ export default async function GetPage({
           </h1>
 
           <p className="md:text-lg text-[#c9d1d9] leading-relaxed mb-10">
-            SPOTTR builds every session around your goal, your equipment, and any injuries. It coaches
-            you set by set, then tells you what to fix and what comes next.
+            SPOTTR builds every session around your goal, your equipment, and any injuries. It tracks
+            every set as you lift, then tells you what to fix and what comes next.
           </p>
 
           {showDownload ? (
