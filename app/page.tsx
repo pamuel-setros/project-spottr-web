@@ -61,7 +61,7 @@ export default function Home() {
   const features = [
     {
       title: 'Rules-based programming',
-      body: 'Deterministic rules pick your exercises, sets, reps, and progression. The AI only explains the plan in plain English.',
+      body: 'Deterministic rules pick your exercises, sets, reps, and progression. The AI explains the plan in plain English.',
       accent: 'spottr' as const,
     },
     {
@@ -324,7 +324,7 @@ export default function Home() {
                 <h3 className="text-2xl md:text-3xl font-bold text-white">Rules write the program. AI explains it.</h3>
                 <p className="text-sm text-muted mt-3 max-w-lg mx-auto">
                   Your program comes from fixed rules over 370+ tagged exercises, so the same inputs give the same plan
-                  every time. The AI puts that plan into plain English. It never picks your exercises or your weights.
+                  every time. The AI&apos;s main job is putting that plan into plain English.
                 </p>
               </div>
 
