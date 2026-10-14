@@ -17,13 +17,13 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://spottrfit.com"),
-  title: "SPOTTR | 5 Features, 1 App. Your Personalized AI Coach.",
+  title: "SPOTTR | Programmed for the gym you actually train in",
   description:
-    "An AI lifting coach that builds every session around your gym, your body, and your injuries — then coaches you through it in real time.",
+    "An AI lifting coach that builds every session around your gym, your body, and your injuries, then coaches you through it set by set.",
   openGraph: {
-    title: "SPOTTR | 5 Features, 1 App. Your Personalized AI Coach.",
+    title: "SPOTTR | Programmed for the gym you actually train in",
     description:
-      "An AI lifting coach that builds every session around your gym, your body, and your injuries — then coaches you through it in real time.",
+      "An AI lifting coach that builds every session around your gym, your body, and your injuries, then coaches you through it set by set.",
     url: "https://spottrfit.com",
     siteName: "SPOTTR",
     images: [
@@ -36,9 +36,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SPOTTR | 5 Features, 1 App. Your Personalized AI Coach.",
+    title: "SPOTTR | Programmed for the gym you actually train in",
     description:
-      "An AI lifting coach that builds every session around your gym, your body, and your injuries — then coaches you through it in real time.",
+      "An AI lifting coach that builds every session around your gym, your body, and your injuries, then coaches you through it set by set.",
     images: ["/opengraph-image.png"],
   },
 };

@@ -57,7 +57,7 @@ export async function generateMetadata({
   if (!gym) return { title: 'Gym not found | SPOTTR' };
   return {
     title: `Train at ${gym.name} | SPOTTR`,
-    description: `${gym.name} is a SPOTTR partner gym — scan in and your AI coach builds every workout around its exact equipment.`,
+    description: `${gym.name} is a SPOTTR partner gym. Scan in and your AI coach builds every workout around its exact equipment.`,
   };
 }
 
@@ -75,11 +75,6 @@ export default async function GymPage({
 
   return (
     <div className="relative flex min-h-screen flex-col bg-base text-fg overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-16 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-spottr/10 blur-3xl"></div>
-        <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-ice/10 blur-3xl"></div>
-      </div>
-
       <header className="border-b border-line bg-surface/80 backdrop-blur-md px-4 sm:px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 select-none">
@@ -94,13 +89,12 @@ export default async function GymPage({
 
       <main className="flex-grow flex items-center justify-center px-6 py-16">
         <div className="max-w-xl w-full text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface/70 border border-line text-xs font-medium text-muted mb-6">
-            <span className="w-2 h-2 rounded-full bg-spottr animate-pulse"></span>
+          <div className="text-xs font-semibold tracking-widest uppercase text-spottr mb-4">
             {gym.verified ? 'Verified SPOTTR partner gym' : 'SPOTTR partner gym'}
           </div>
 
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-3 leading-[1.08]">
-            Train at <span className="gradient-text">{gym.name}</span>
+            Train at <span className="text-spottr">{gym.name}</span>
           </h1>
           {gym.city && <p className="text-sm text-muted mb-2">{gym.city}</p>}
           {(gym.members_count ?? 0) >= 3 && (
@@ -123,7 +117,7 @@ export default async function GymPage({
 
           <p className="md:text-lg text-[#c9d1d9] leading-relaxed mb-8">
             This gym&apos;s full equipment loadout lives in SPOTTR. Scan the poster in the app and your
-            AI coach builds every session around what&apos;s actually on this floor —{' '}
+            AI coach builds every session around what&apos;s actually on this floor:{' '}
             <span className="text-white font-semibold">{equipmentCount} pieces of equipment</span>, nothing invented.
           </p>
 
@@ -168,7 +162,7 @@ export default async function GymPage({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
               href={`spottr://g/${gym.slug}`}
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 text-base font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 rounded-full bg-spottr px-8 py-3.5 text-base font-semibold text-black transition-colors hover:bg-spottr-deep"
             >
               Open in the SPOTTR app <span className="text-lg">→</span>
             </a>

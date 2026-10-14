@@ -56,34 +56,14 @@
 }
 
 @layer utilities {
-  .hero-surface {
-    background-image: radial-gradient(circle at 16% 12%, rgba(52, 208, 88, 0.16) 0%, transparent 36%),
-      radial-gradient(circle at 92% 8%, rgba(56, 189, 248, 0.14) 0%, transparent 30%);
-  }
-
   .premium-card {
     background: rgba(19, 21, 25, 0.86);
     border: 1px solid rgba(56, 189, 248, 0.14);
     backdrop-filter: blur(18px);
   }
 
-  .text-glow {
-    text-shadow: 0 0 32px rgba(56, 189, 248, 0.18);
-  }
-
-  .gradient-text {
-    background: linear-gradient(100deg, var(--color-spottr), var(--color-ice));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
   .animate-fade {
     animation: fadeIn 0.9s ease both;
-  }
-
-  .animate-float-slow {
-    animation: floatSlow 8s ease-in-out infinite;
   }
 
   /* Auto-advance clock for the "How it works" demo: the bar filling IS the
@@ -121,15 +101,5 @@
   }
   100% {
     width: 100%;
-  }
-}
-
-@keyframes floatSlow {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
   }
 }
