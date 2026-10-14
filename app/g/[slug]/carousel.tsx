@@ -116,7 +116,6 @@ export default function PhotoCarousel({ photos, gymName }: { photos: string[]; g
   // horizontal scroll): ~1.7x card width total for 5 cards.
   return (
     <div className="relative mb-12 select-none" aria-label={`${gymName} photo gallery`} role="img">
-      <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-52 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-spottr/10 blur-3xl" />
       <div
         ref={sceneRef}
         className="cursor-grab active:cursor-grabbing"

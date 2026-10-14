@@ -24,7 +24,7 @@ const SRC_RX = /^[a-z0-9-]{1,64}$/;
 export const metadata: Metadata = {
   title: 'Get SPOTTR | Your AI lifting coach',
   description:
-    'SPOTTR builds every workout around your goals, your gym, and your body — then coaches you through it in real time.',
+    'SPOTTR builds every session around your goal, your equipment, and any injuries, then tracks every set and debriefs you after.',
 };
 
 function detectPlatform(ua: string): 'ios' | 'android' | 'desktop' {
@@ -62,11 +62,6 @@ export default async function GetPage({
 
   return (
     <div className="relative flex min-h-screen flex-col bg-base text-fg overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-16 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-spottr/10 blur-3xl"></div>
-        <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-ice/10 blur-3xl"></div>
-      </div>
-
       <header className="border-b border-line bg-surface/80 backdrop-blur-md px-4 sm:px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link
@@ -87,39 +82,33 @@ export default async function GetPage({
 
       <main className="flex-grow flex items-center justify-center px-6 py-16">
         <div className="max-w-xl w-full text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface/70 border border-line text-xs font-medium text-muted mb-6">
-            <span className="w-2 h-2 rounded-full bg-spottr animate-pulse"></span>
-            Your AI lifting coach
-          </div>
-
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-6 leading-[1.08]">
-            Never lift <span className="gradient-text">alone</span> again.
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-[1.08]">
+            Never lift <span className="text-spottr">alone</span> again.
           </h1>
 
           <p className="md:text-lg text-[#c9d1d9] leading-relaxed mb-10">
-            SPOTTR builds every workout around your goals, your gym, and your body — then coaches you
-            through it in real time and breaks down exactly how it went. No generic spreadsheets. No
-            made-up advice.
+            SPOTTR builds every session around your goal, your equipment, and any injuries. It tracks
+            every set as you lift, then tells you what to fix and what comes next.
           </p>
 
           {showDownload ? (
             <>
               <a
                 href={DOWNLOAD_URL!}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-10 py-4 text-lg font-semibold text-black shadow-[0_14px_36px_rgba(52,208,88,0.25)] transition-transform duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
+                className="inline-flex items-center gap-2 rounded-full bg-spottr px-10 py-4 text-lg font-semibold text-black transition-colors hover:bg-spottr-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ice focus-visible:ring-offset-2 focus-visible:ring-offset-base"
               >
                 {IS_BETA ? 'Download the beta' : 'Download SPOTTR'} <span className="text-xl">→</span>
               </a>
               {IS_BETA && (
                 <p className="text-xs text-muted mt-6">
-                  Free beta via Apple&apos;s TestFlight — takes two taps. iPhone-first; Android is coming.
+                  Free beta via Apple&apos;s TestFlight. Takes two taps. iPhone-first; Android is coming.
                 </p>
               )}
             </>
           ) : platform === 'android' && DOWNLOAD_URL !== null ? (
             <>
               <p className="text-white font-semibold mb-6">
-                SPOTTR is iPhone-first right now — Android is coming.
+                SPOTTR is iPhone-first right now. Android is coming.
               </p>
               <WaitlistInline />
               <p className="text-xs text-muted mt-6">Drop your email and you&apos;ll be first to know.</p>
@@ -128,7 +117,7 @@ export default async function GetPage({
             <>
               <p className="text-white font-semibold mb-6">SPOTTR is in early access.</p>
               <WaitlistInline />
-              <p className="text-xs text-muted mt-6">No spam — just the invite, the moment it opens up.</p>
+              <p className="text-xs text-muted mt-6">No spam. Just the invite, the moment it opens up.</p>
             </>
           )}
         </div>
