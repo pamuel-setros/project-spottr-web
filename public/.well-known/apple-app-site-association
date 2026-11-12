@@ -2,11 +2,17 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["SZC663LLCS.com.spottrfit.app"],
+        "appIDs": [
+          "SZC663LLCS.com.spottrfit.app"
+        ],
         "components": [
           {
             "/": "/g/*",
             "comment": "Gym QR posters (spottrfit.com/g/<slug>) open SPOTTR's in-app scanner"
+          },
+          {
+            "/": "/w/*",
+            "comment": "Shared workout links (spottrfit.com/w/<slug>) open SPOTTR's SharedWorkout screen"
           }
         ]
       }
