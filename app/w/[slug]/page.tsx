@@ -1,16 +1,19 @@
 // app/w/[slug]/page.tsx
 //
-// The web landing behind every shared workout link (spottrfit.com/w/<slug>),
-// usually tapped from an iMessage preview card. Phones WITH the app + universal
-// links go straight into SPOTTR's SharedWorkout screen; this page catches
-// everyone else: it shows the workout (from the public snapshot — see
-// lib/shares.ts) and pitches the download so they can run it themselves.
+// The web fallback behind every shared workout link (spottrfit.com/w/<slug>).
+// People WITH the app never land here: the universal link opens SPOTTR's own
+// SharedWorkout screen. Everyone else gets a compact teaser of the workout
+// (headline stats + a one-line summary per exercise, first few only) and a
+// sticky call to action to get the app and run it themselves. The full
+// set-by-set view, start, save and (later) reactions live in the app.
 
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { byline, formatShareDate, getShare, setLine, summaryLine } from '@/lib/shares';
+import { byline, exerciseSummary, formatShareDate, getShare, summaryLine } from '@/lib/shares';
+
+const PREVIEW_COUNT = 5;
 
 export async function generateMetadata({
   params,
@@ -21,10 +24,10 @@ export async function generateMetadata({
   const share = await getShare(slug);
   if (!share) return { title: 'Workout not found | SPOTTR', robots: { index: false } };
   const s = share.snapshot;
-  const title = `${s.name} — ${byline(s)} | SPOTTR`;
-  const description = `${summaryLine(s)}. Open it in SPOTTR to run this workout yourself.`;
+  const title = `${s.name} — ${byline(s)}`;
+  const description = `${summaryLine(s)}. Run it yourself in SPOTTR.`;
   return {
-    title,
+    title: `${title} | SPOTTR`,
     description,
     // Shared links are personal; keep them out of search results.
     robots: { index: false, follow: false },
@@ -44,108 +47,100 @@ export default async function SharedWorkoutPage({
 
   const s = share.snapshot;
   const date = formatShareDate(s.date);
+  const shown = s.exercises.slice(0, PREVIEW_COUNT);
+  const hidden = s.exercises.length - shown.length;
 
   const stats = [
-    s.duration_min ? { value: `${s.duration_min}m`, label: 'Time' } : null,
-    { value: String(s.totals.lifts), label: 'Lifts' },
-    { value: String(s.totals.sets), label: 'Sets' },
-    s.totals.tonnage ? { value: Math.round(s.totals.tonnage).toLocaleString('en-US'), label: 'Lbs' } : null,
-    s.totals.prs ? { value: String(s.totals.prs), label: 'PRs' } : null,
-  ].filter((x): x is { value: string; label: string } => x !== null);
+    s.duration_min ? { value: `${s.duration_min}`, unit: 'min', label: 'Duration' } : null,
+    s.totals.tonnage
+      ? { value: Math.round(s.totals.tonnage).toLocaleString('en-US'), unit: 'lbs', label: 'Volume' }
+      : { value: String(s.totals.lifts), unit: '', label: 'Exercises' },
+    { value: String(s.totals.sets), unit: '', label: 'Sets' },
+  ].filter((x): x is { value: string; unit: string; label: string } => x !== null);
 
   return (
     <div className="relative flex min-h-screen flex-col bg-base text-fg overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-16 left-1/2 h-80 w-80 -translate-x-1/2 rounded-full bg-spottr/10 blur-3xl"></div>
-        <div className="absolute right-0 top-24 h-72 w-72 rounded-full bg-ice/10 blur-3xl"></div>
+        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-spottr/10 blur-3xl"></div>
       </div>
 
-      <header className="border-b border-line bg-surface/80 backdrop-blur-md px-4 sm:px-6 py-3.5">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+      <header className="px-4 sm:px-6 py-3.5">
+        <div className="max-w-md mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 select-none">
-            <Image src="/web/mark.png" alt="SPOTTR" width={30} height={30} priority className="rounded-lg" />
-            <Image src="/spottr_text.png" alt="SPOTTR" width={108} height={25} priority className="object-contain w-auto h-auto" />
+            <Image src="/web/mark.png" alt="SPOTTR" width={28} height={28} priority className="rounded-lg" />
+            <Image src="/spottr_text.png" alt="SPOTTR" width={96} height={22} priority className="object-contain w-auto h-auto" />
           </Link>
-          <Link href="/" className="text-sm text-muted hover:text-white transition-colors">
+          <Link href="/" className="text-xs text-muted hover:text-white transition-colors">
             What is SPOTTR?
           </Link>
         </div>
       </header>
 
-      <main className="flex-grow px-6 py-12">
-        <div className="max-w-xl w-full mx-auto">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface/70 border border-line text-xs font-medium text-muted mb-6">
-              <span className="w-2 h-2 rounded-full bg-spottr animate-pulse"></span>
-              {s.sharer_name ? `Shared by ${s.sharer_name}` : 'Shared workout'}
-            </div>
+      {/* pb-40 leaves room for the sticky CTA bar */}
+      <main className="flex-grow px-4 pt-2 pb-40">
+        <article className="max-w-md mx-auto rounded-3xl border border-line bg-surface/80 p-5 sm:p-6 shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-spottr">
+            {s.sharer_name ? `${s.sharer_name}'s workout` : 'Shared workout'}
+            {date && <span className="text-muted"> · {date}</span>}
+          </p>
+          <h1 className="mt-1.5 text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-white leading-[1.02]">
+            {s.name}
+          </h1>
+          <div className="mt-3 h-1 w-14 rounded-full bg-gradient-to-r from-spottr to-ice" />
 
-            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-2 leading-[1.08]">
-              <span className="gradient-text">{s.name}</span>
-            </h1>
-            {date && <p className="text-sm text-muted mb-6">{date}</p>}
-
-            <div className="flex flex-wrap justify-center gap-2 mb-10">
-              {stats.map((st) => (
-                <div key={st.label} className="min-w-[72px] rounded-xl border border-line bg-surface px-4 py-2.5">
-                  <div className="text-xl font-extrabold text-white tabular-nums">{st.value}</div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-muted">{st.label}</div>
+          <div className="mt-5 grid grid-cols-3 gap-2">
+            {stats.map((st) => (
+              <div key={st.label} className="min-w-0 rounded-2xl border border-line bg-base/60 px-2.5 py-2.5">
+                <div className="text-lg font-extrabold text-white tabular-nums leading-none tracking-tight whitespace-nowrap">
+                  {st.value}
+                  {st.unit && <span className="ml-0.5 text-xs font-semibold text-muted">{st.unit}</span>}
                 </div>
-              ))}
-            </div>
+                <div className="mt-1 text-[10px] font-bold uppercase tracking-widest text-muted">{st.label}</div>
+              </div>
+            ))}
           </div>
 
-          <ol className="space-y-3 mb-10">
-            {s.exercises.map((ex, i) => (
-              <li key={`${ex.block ?? ''}-${ex.name}-${i}`} className="rounded-2xl border border-line bg-surface p-4">
-                <div className="flex items-baseline justify-between gap-3">
-                  <h2 className="font-bold text-white">{ex.name}</h2>
-                  {ex.block && (
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted shrink-0">{ex.block}</span>
-                  )}
-                </div>
-                {ex.target_muscle && <p className="text-xs text-muted mt-0.5">{ex.target_muscle}</p>}
-                <ul className="mt-2 divide-y divide-line">
-                  {ex.sets.map((set, j) => (
-                    <li key={j} className="flex items-center gap-3 py-1.5 text-sm">
-                      <span className="w-5 text-muted tabular-nums">{j + 1}</span>
-                      <span className="flex-1 text-[#c9d1d9] tabular-nums">{setLine(set, ex.tracking_type)}</span>
-                      {set.is_pr && (
-                        <span className="rounded bg-yellow-400 px-1.5 py-0.5 text-[10px] font-black text-black">PR</span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+          <ul className="mt-5 divide-y divide-line">
+            {shown.map((ex, i) => (
+              <li key={`${ex.block ?? ''}-${ex.name}-${i}`} className="flex items-baseline justify-between gap-3 py-2.5">
+                <span className="font-semibold text-white text-sm">{ex.name}</span>
+                <span className="shrink-0 text-xs text-[#c9d1d9] tabular-nums">{exerciseSummary(ex)}</span>
               </li>
             ))}
-          </ol>
-
-          <div className="text-center">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <a
-                href={`spottr://w/${share.slug}`}
-                className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-8 py-3.5 font-semibold text-black shadow-[0_20px_70px_rgba(52,208,88,0.28)] transition-transform duration-300 hover:-translate-y-0.5"
-              >
-                Start this in SPOTTR <span className="text-lg">→</span>
-              </a>
-              <Link
-                href="/get?src=shared-workout"
-                className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-8 py-3.5 font-semibold text-white transition-colors hover:border-spottr/50"
-              >
-                Get SPOTTR
-              </Link>
-            </div>
-            <p className="text-xs text-muted mt-6">
-              {s.show_weights ? '' : 'Weights hidden by the sharer — SPOTTR suggests yours. '}
-              New to SPOTTR? Install it, then tap this link again to load the workout.
+          </ul>
+          {hidden > 0 && (
+            <p className="mt-2 text-xs font-semibold text-spottr">
+              +{hidden} more {hidden === 1 ? 'exercise' : 'exercises'} — see every set in the app
             </p>
-          </div>
-        </div>
+          )}
+          {!s.show_weights && (
+            <p className="mt-3 text-xs text-muted">Weights hidden by the sharer. SPOTTR suggests yours.</p>
+          )}
+        </article>
+
+        <p className="max-w-md mx-auto mt-6 text-center text-sm text-muted leading-relaxed">
+          SPOTTR is an AI lifting coach. It turns this workout into a session built for your gym and your
+          numbers, then coaches you through every set.
+        </p>
       </main>
 
-      <footer className="border-t border-line bg-base px-6 py-6 text-center text-xs text-muted">
-        <p>© 2026 SPOTTR · Never lift alone.</p>
-      </footer>
+      {/* Sticky CTA */}
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-base/90 backdrop-blur-md px-4 pt-3 pb-[max(env(safe-area-inset-bottom),12px)]">
+        <div className="max-w-md mx-auto flex flex-col gap-2">
+          <Link
+            href="/get?src=shared-workout"
+            className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-spottr to-ice px-6 py-3.5 font-bold text-black"
+          >
+            Get SPOTTR and run this workout <span aria-hidden>→</span>
+          </Link>
+          <a
+            href={`spottr://w/${share.slug}`}
+            className="text-center text-xs font-semibold text-muted hover:text-white transition-colors py-1"
+          >
+            Already have SPOTTR? Open it in the app
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

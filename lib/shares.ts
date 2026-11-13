@@ -102,3 +102,26 @@ export function summaryLine(s: SharedSnapshot): string {
   ].filter(Boolean);
   return parts.join(' · ');
 }
+
+// One compact line per exercise for the web page, e.g. "3 × 5 · top 235 lb",
+// "4 sets · 8–12 reps", "2 × 1:15", "40 floors · 12:00".
+export function exerciseSummary(ex: SharedExercise): string {
+  const sets = ex.sets;
+  const n = sets.length;
+  if (n === 0) return '';
+  if (ex.tracking_type === 'time') {
+    const best = Math.max(...sets.map((s) => s.weight ?? 0));
+    return `${n} × ${formatClock(best)}`;
+  }
+  if (ex.tracking_type === 'distance_time') {
+    return n === 1 ? setLine(sets[0], ex.tracking_type) : `${n} rounds · ${setLine(sets[0], ex.tracking_type)}`;
+  }
+  const reps = sets.map((s) => s.reps || 0);
+  const lo = Math.min(...reps);
+  const hi = Math.max(...reps);
+  const volume = lo === hi ? `${n} × ${lo}` : `${n} sets · ${lo}–${hi} reps`;
+  const loads = sets.map((s) => s.weight).filter((w): w is number => typeof w === 'number' && w > 0);
+  return loads.length && ex.tracking_type === 'weight_reps'
+    ? `${volume} · top ${Math.max(...loads)} lb`
+    : volume;
+}

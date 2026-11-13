@@ -2,6 +2,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.68.59'],
+  // The shared-workout preview card reads the Archivo display font from disk at
+  // request time (readFile + process.cwd()); make sure the deploy bundles it.
+  outputFileTracingIncludes: {
+    '/w/**': ['./assets/fonts/**/*'],
+  },
   async headers() {
     return [
       {
