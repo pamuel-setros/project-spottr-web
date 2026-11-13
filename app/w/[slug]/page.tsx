@@ -119,8 +119,8 @@ export default async function SharedWorkoutPage({
         </article>
 
         <p className="max-w-md mx-auto mt-6 text-center text-sm text-muted leading-relaxed">
-          SPOTTR is an AI lifting coach. It turns this workout into a session built for your gym and your
-          numbers, then coaches you through every set.
+          SPOTTR is an AI lifting coach. Start this workout in the app and it tracks every set as you lift,
+          then debriefs you after.
         </p>
       </main>
 
